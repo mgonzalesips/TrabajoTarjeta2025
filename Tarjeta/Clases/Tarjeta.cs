@@ -21,7 +21,7 @@ namespace Tarjeta.Clases
                 {
                     Saldo += monto;
                 }
-                // Si lo deseas, puedes agregar un else para manejar el caso en que se exceda el límite.
+                // un else
             }
         }
 
