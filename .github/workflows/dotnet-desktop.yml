@@ -9,17 +9,14 @@ on:
       - '**'
 
 jobs:
-
   build-and-test:
-
     runs-on: windows-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-   
-    - name: Setup .NET 5.0
+    - name: Setup .NET 5.0 (o .NET 6.0 si decides actualizar)
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '5.0.x'
@@ -32,6 +29,11 @@ jobs:
 
     - name: Run tests with coverage
       run: dotnet test --no-build --collect:"XPlat Code Coverage" ./tarjeta/tarjeta.sln
+
+    - name: Listar archivos generados
+      run: |
+        echo "Archivos generados:"
+        ls -R ./**/coverage.cobertura.xml
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v5
