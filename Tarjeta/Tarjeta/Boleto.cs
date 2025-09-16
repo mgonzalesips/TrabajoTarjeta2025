@@ -12,10 +12,11 @@ namespace Tarjeta
         public float Precio { get; set; }
 
         //Constructor
-        public Boleto(float Precio)
+        public Boleto(float precio)
         {
             Precio = precio;
         }
 
     }
 }
+
