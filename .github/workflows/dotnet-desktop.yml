@@ -33,10 +33,10 @@ jobs:
     - name: Listar archivos generados
       run: |
         echo "Archivos generados:"
-        ls -R ./**/coverage.cobertura.xml
+        dir /s /b *.xml  # Para listar todos los archivos XML y confirmar la ubicación del archivo de cobertura
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v5
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        files: ./**/coverage.cobertura.xml
+        files: ./tarjeta/coverage.cobertura.xml  # Ajusta esta ruta según la ubicación exacta del archivo
