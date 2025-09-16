@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Punto Digital\\source\\repos\\TrabajoTarjeta\\TrabajoTarjeta\\TrabajoTarjeta.csproj",
+      "projectUniqueName": "C:\\Users\\Punto Digital\\Desktop\\TrabajoTarjeta2025\\TrabajoTarjeta\\TrabajoTarjeta.csproj",
       "projectName": "TrabajoTarjeta",
-      "projectPath": "C:\\Users\\Punto Digital\\source\\repos\\TrabajoTarjeta\\TrabajoTarjeta\\TrabajoTarjeta.csproj",
+      "projectPath": "C:\\Users\\Punto Digital\\Desktop\\TrabajoTarjeta2025\\TrabajoTarjeta\\TrabajoTarjeta.csproj",
       "packagesPath": "C:\\Users\\Punto Digital\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Punto Digital\\source\\repos\\TrabajoTarjeta\\TrabajoTarjeta\\obj\\",
+      "outputPath": "C:\\Users\\Punto Digital\\Desktop\\TrabajoTarjeta2025\\TrabajoTarjeta\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Punto Digital\\AppData\\Roaming\\NuGet\\NuGet.Config",

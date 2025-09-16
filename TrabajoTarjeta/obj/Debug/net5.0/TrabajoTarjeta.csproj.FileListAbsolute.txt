@@ -1,0 +1,12 @@
+C:\Users\Punto Digital\Desktop\TrabajoTarjeta2025\TrabajoTarjeta\obj\Debug\net5.0\TrabajoTarjeta.csproj.AssemblyReference.cache
+C:\Users\Punto Digital\Desktop\TrabajoTarjeta2025\TrabajoTarjeta\obj\Debug\net5.0\TrabajoTarjeta.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Punto Digital\Desktop\TrabajoTarjeta2025\TrabajoTarjeta\obj\Debug\net5.0\TrabajoTarjeta.AssemblyInfoInputs.cache
+C:\Users\Punto Digital\Desktop\TrabajoTarjeta2025\TrabajoTarjeta\obj\Debug\net5.0\TrabajoTarjeta.AssemblyInfo.cs
+C:\Users\Punto Digital\Desktop\TrabajoTarjeta2025\TrabajoTarjeta\obj\Debug\net5.0\TrabajoTarjeta.csproj.CoreCompileInputs.cache
+C:\Users\Punto Digital\Desktop\TrabajoTarjeta2025\TrabajoTarjeta\bin\Debug\net5.0\TrabajoTarjeta.deps.json
+C:\Users\Punto Digital\Desktop\TrabajoTarjeta2025\TrabajoTarjeta\bin\Debug\net5.0\TrabajoTarjeta.dll
+C:\Users\Punto Digital\Desktop\TrabajoTarjeta2025\TrabajoTarjeta\bin\Debug\net5.0\ref\TrabajoTarjeta.dll
+C:\Users\Punto Digital\Desktop\TrabajoTarjeta2025\TrabajoTarjeta\bin\Debug\net5.0\TrabajoTarjeta.pdb
+C:\Users\Punto Digital\Desktop\TrabajoTarjeta2025\TrabajoTarjeta\obj\Debug\net5.0\TrabajoTarjeta.dll
+C:\Users\Punto Digital\Desktop\TrabajoTarjeta2025\TrabajoTarjeta\obj\Debug\net5.0\ref\TrabajoTarjeta.dll
+C:\Users\Punto Digital\Desktop\TrabajoTarjeta2025\TrabajoTarjeta\obj\Debug\net5.0\TrabajoTarjeta.pdb
