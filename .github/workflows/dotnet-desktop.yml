@@ -28,7 +28,7 @@ jobs:
       run: dotnet restore ./tarjeta/tarjeta.sln
 
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore ./tarjeta/tarjeta.sln
 
     - name: Run tests with coverage
       run: dotnet test --no-build --collect:"XPlat Code Coverage"
