@@ -30,11 +30,6 @@ jobs:
     - name: Run tests with coverage
       run: dotnet test --no-build --collect:"XPlat Code Coverage" ./tarjeta/tarjeta.sln
 
-    - name: Listar archivos generados
-      run: |
-        echo "Archivos generados:"
-        dir /s /b *.xml  # Para listar todos los archivos XML y confirmar la ubicación del archivo de cobertura
-
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v5
       with:
