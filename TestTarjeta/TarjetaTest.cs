@@ -86,8 +86,10 @@ namespace TestTarjeta
         public void TestNoPuedeDescontarConSaldoInsuficiente()
         {
             tarjeta.Cargar(2000);
-            Assert.IsFalse(tarjeta.PuedeDescontar(3000));
-            Assert.IsFalse(tarjeta.PuedeDescontar(2001));
+            // Con saldo negativo permitido hasta -1200, sí puede descontar más del saldo actual
+            // pero no puede exceder el límite de -1200
+            Assert.IsTrue(tarjeta.PuedeDescontar(3000)); // 2000 - 3000 = -1000 (permitido)
+            Assert.IsFalse(tarjeta.PuedeDescontar(3201)); // 2000 - 3201 = -1201 (no permitido)
         }
 
         [Test]
@@ -102,7 +104,9 @@ namespace TestTarjeta
         public void TestDescontarConSaldoInsuficienteLanzaExcepcion()
         {
             tarjeta.Cargar(2000);
-            Assert.Throws<InvalidOperationException>(() => tarjeta.Descontar(3000));
+            // Ahora puede descontar hasta quedar en -1200
+            // Solo lanza excepción si excede el límite
+            Assert.Throws<InvalidOperationException>(() => tarjeta.Descontar(3201));
         }
 
         [Test]
@@ -113,6 +117,21 @@ namespace TestTarjeta
             tarjeta.Descontar(1580); // Saldo: 6840
             tarjeta.Descontar(1580); // Saldo: 5260
             Assert.AreEqual(5260, tarjeta.ObtenerSaldo());
+        }
+
+        [Test]
+        public void TestDescontarHastaSaldoNegativoPermitido()
+        {
+            tarjeta.Cargar(2000);
+            tarjeta.Descontar(3000); // Saldo: -1000 (permitido)
+            Assert.AreEqual(-1000, tarjeta.ObtenerSaldo());
+        }
+
+        [Test]
+        public void TestDescontarExcedeLimiteNegativoLanzaExcepcion()
+        {
+            // Intentar descontar más del límite permitido desde saldo 0
+            Assert.Throws<InvalidOperationException>(() => tarjeta.Descontar(1201));
         }
     }
 }

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TrabajoTarjeta
 {
@@ -26,6 +22,7 @@ namespace TrabajoTarjeta
             return TARIFA_BASICA;
         }
 
+        // Método original que lanza excepción (mantener compatibilidad)
         public Boleto PagarCon(Tarjeta tarjeta)
         {
             if (tarjeta == null)
@@ -33,19 +30,48 @@ namespace TrabajoTarjeta
                 throw new ArgumentNullException(nameof(tarjeta));
             }
 
-            if (!tarjeta.PuedeDescontar(TARIFA_BASICA))
+            decimal tarifa = tarjeta.CalcularTarifa(TARIFA_BASICA);
+
+            if (!tarjeta.PuedeDescontar(tarifa))
             {
                 throw new InvalidOperationException("La tarjeta no tiene saldo suficiente para pagar el pasaje.");
             }
 
-            tarjeta.Descontar(TARIFA_BASICA);
-
+            tarjeta.Descontar(tarifa);
             return new Boleto(
                 fechaHora: DateTime.Now,
-                tarifa: TARIFA_BASICA,
+                tarifa: tarifa,
                 saldoRestante: tarjeta.ObtenerSaldo(),
                 linea: linea
             );
+        }
+
+        // Nuevo método que retorna false en lugar de excepción
+        public bool TryPagarCon(Tarjeta tarjeta, out Boleto boleto)
+        {
+            boleto = null;
+
+            if (tarjeta == null)
+            {
+                return false;
+            }
+
+            decimal tarifa = tarjeta.CalcularTarifa(TARIFA_BASICA);
+
+            if (!tarjeta.PuedeDescontar(tarifa))
+            {
+                return false;
+            }
+
+            tarjeta.Descontar(tarifa);
+            boleto = new Boleto(
+                fechaHora: DateTime.Now,
+                tarifa: tarifa,
+                saldoRestante: tarjeta.ObtenerSaldo(),
+                linea: linea
+            );
+
+            return true;
         }
     }
 }

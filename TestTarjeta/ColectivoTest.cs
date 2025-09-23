@@ -60,19 +60,20 @@ namespace TestTarjeta
         [Test]
         public void TestPagarConTarjetaSinSaldoLanzaExcepcion()
         {
-            // Tarjeta sin cargar (saldo = 0)
+            // Con saldo 0, puede descontar hasta -1200, así que 1580 es permitido
+            // Para que lance excepción, necesitamos estar en el límite
+            tarjeta.Descontar(1200); // Saldo: -1200
             Assert.Throws<InvalidOperationException>(() => colectivo.PagarCon(tarjeta));
         }
 
         [Test]
         public void TestPagarConTarjetaConSaldoInsuficienteLanzaExcepcion()
         {
-            // Cargamos menos de lo que cuesta un pasaje
-            // Como no hay montos menores a 1580 en las cargas válidas,
-            // usamos una tarjeta que ya tuvo un descuento
             tarjeta.Cargar(2000);
-            colectivo.PagarCon(tarjeta); // Queda con saldo 420
+            colectivo.PagarCon(tarjeta); // Saldo: 420
+            colectivo.PagarCon(tarjeta); // Saldo: -1160 (permitido)
 
+            // El tercer viaje sí debería fallar (quedaría en -2740)
             Assert.Throws<InvalidOperationException>(() => colectivo.PagarCon(tarjeta));
         }
 
@@ -110,6 +111,20 @@ namespace TestTarjeta
 
             Assert.AreEqual("121", boleto1.ObtenerLinea());
             Assert.AreEqual("144 Negro", boleto2.ObtenerLinea());
+        }
+
+        [Test]
+        public void TestPagarConSaldoNegativoPermitido()
+        {
+            tarjeta.Cargar(2000);
+
+            // Primer viaje: 2000 - 1580 = 420
+            Boleto boleto1 = colectivo.PagarCon(tarjeta);
+            Assert.AreEqual(420, boleto1.ObtenerSaldoRestante());
+
+            // Segundo viaje: 420 - 1580 = -1160 (permitido)
+            Boleto boleto2 = colectivo.PagarCon(tarjeta);
+            Assert.AreEqual(-1160, boleto2.ObtenerSaldoRestante());
         }
     }
 }
