@@ -10,11 +10,12 @@ namespace Tarjeta.Clases
 
         public Boleto? PagarCon(Tarjeta tarjeta, decimal monto = 1580)
         {
-            if (tarjeta.Saldo >= monto)
+            if (tarjeta.DescontarSaldo(monto))
             {
-                tarjeta.Saldo -= monto;
                 return new Boleto(Linea, monto);
             }
+            
+            // Si no hay saldo suficiente
             return null;
         }
         public override string ToString()

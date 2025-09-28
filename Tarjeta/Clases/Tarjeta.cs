@@ -12,17 +12,36 @@ namespace Tarjeta.Clases
             Saldo = saldoInicial;
         }
 
-        public void Recargar(decimal monto)
+        public bool Recargar(decimal monto)
         {
             decimal[] cargasAceptadas = [2000, 3000, 4000, 5000, 8000, 10000, 15000, 20000, 25000, 30000];
-            if (Array.Exists(cargasAceptadas, x => x == monto))
+            
+            // Verificar si el monto está en las cargas aceptadas
+            if (!Array.Exists(cargasAceptadas, x => x == monto))
             {
-                if (Saldo + monto <= LIMITE_SALDO)
-                {
-                    Saldo += monto;
-                }
-                // un else
+                return false;
             }
+            
+            // Verificar si no se excede del límite
+            if (Saldo + monto > LIMITE_SALDO)
+            {
+                return false;
+            }
+            
+            Saldo += monto;
+            return true;
+        }
+
+        public bool DescontarSaldo(decimal monto)
+        {
+            // No permitir saldo negativo
+            if (Saldo < monto)
+            {
+                return false;
+            }
+            
+            Saldo -= monto;
+            return true;
         }
 
         public override string ToString()
