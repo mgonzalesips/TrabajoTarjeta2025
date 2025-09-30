@@ -11,12 +11,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("TrabajoTarjeta")]
-[assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("TrabajoTarjeta.Tests")]
+[assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+246b6da030263fe0e1c8fc6d06ba903fd6fc19a7")]
-[assembly: System.Reflection.AssemblyProductAttribute("TrabajoTarjeta")]
-[assembly: System.Reflection.AssemblyTitleAttribute("TrabajoTarjeta")]
+[assembly: System.Reflection.AssemblyProductAttribute("TrabajoTarjeta.Tests")]
+[assembly: System.Reflection.AssemblyTitleAttribute("TrabajoTarjeta.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
 // Generado por la clase WriteCodeFragment de MSBuild.

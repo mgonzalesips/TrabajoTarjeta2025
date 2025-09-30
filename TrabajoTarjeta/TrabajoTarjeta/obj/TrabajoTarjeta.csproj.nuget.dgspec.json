@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Ciro\\source\\repos\\Trabajo Tarjeta\\TrabajoTarjeta\\TrabajoTarjeta\\TrabajoTarjeta.csproj": {}
+    "C:\\Users\\dana\\source\\repos\\Trabajo tarjeta\\TrabajoTarjeta\\TrabajoTarjeta\\TrabajoTarjeta.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Ciro\\source\\repos\\Trabajo Tarjeta\\TrabajoTarjeta\\TrabajoTarjeta\\TrabajoTarjeta.csproj": {
+    "C:\\Users\\dana\\source\\repos\\Trabajo tarjeta\\TrabajoTarjeta\\TrabajoTarjeta\\TrabajoTarjeta.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Ciro\\source\\repos\\Trabajo Tarjeta\\TrabajoTarjeta\\TrabajoTarjeta\\TrabajoTarjeta.csproj",
+        "projectUniqueName": "C:\\Users\\dana\\source\\repos\\Trabajo tarjeta\\TrabajoTarjeta\\TrabajoTarjeta\\TrabajoTarjeta.csproj",
         "projectName": "TrabajoTarjeta",
-        "projectPath": "C:\\Users\\Ciro\\source\\repos\\Trabajo Tarjeta\\TrabajoTarjeta\\TrabajoTarjeta\\TrabajoTarjeta.csproj",
-        "packagesPath": "C:\\Users\\Ciro\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Ciro\\source\\repos\\Trabajo Tarjeta\\TrabajoTarjeta\\TrabajoTarjeta\\obj\\",
+        "projectPath": "C:\\Users\\dana\\source\\repos\\Trabajo tarjeta\\TrabajoTarjeta\\TrabajoTarjeta\\TrabajoTarjeta.csproj",
+        "packagesPath": "C:\\Users\\dana\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\dana\\source\\repos\\Trabajo tarjeta\\TrabajoTarjeta\\TrabajoTarjeta\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Ciro\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\dana\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
