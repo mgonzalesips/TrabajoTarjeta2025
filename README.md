@@ -1,3 +1,4 @@
+# [![codecov](https://codecov.io/gh/Lu-Luou/TrabajoTarjeta2025/graph/badge.svg)](https://codecov.io/gh/Lu-Luou/TrabajoTarjeta2025)
 # Trabajo Tarjeta 2025
 
 El siguiente trabajo es un enunciado iterativo. Regularmente se ampliara y/o modificara el enunciado.
