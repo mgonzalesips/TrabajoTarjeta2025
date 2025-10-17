@@ -26,7 +26,7 @@ namespace Tarjeta
         public void Cargar(float cantidad)
         {
             // Validar que la cantidad esté en la lista de cargas permitidas
-            if (!cargasPermitidas.Contains((float)cantidad))  // Convertir cantidad a entero para que coincida con los valores de la lista
+            if (!cargasPermitidas.Contains((float)cantidad)) 
             {
                 Console.WriteLine("Carga no permitida. Las cargas permitidas son: 2000, 3000, 4000, 5000, 8000, 10000, 15000, 20000, 25000, 30000.");
                 return;
