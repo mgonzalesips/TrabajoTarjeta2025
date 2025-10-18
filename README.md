@@ -1,5 +1,8 @@
 # Trabajo Tarjeta 2025
 
+[![.NET](https://github.com/julian-ferrari/TrabajoTarjeta2025/actions/workflows/dotnet.yml/badge.svg)](https://github.com/TU_USUARIO/TU_REPO/actions/workflows/dotnet.yml)
+[![codecov](https://codecov.io/gh/julian-ferrari/TrabajoTarjeta2025/branch/main/graph/badge.svg)](https://codecov.io/gh/TU_USUARIO/TU_REPO)
+
 El siguiente trabajo es un enunciado iterativo. Regularmente se ampliara y/o modificara el enunciado.
 <br><br>
 Aclaraciones: 
