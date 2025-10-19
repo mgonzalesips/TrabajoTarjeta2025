@@ -1,4 +1,5 @@
-﻿public class Boleto
+using System;
+public class Boleto
 {
     private decimal montoPagado;
     private string lineaColectivo;
@@ -39,4 +40,5 @@
     {
         get { return fechaHora; }
     }
+
 }
