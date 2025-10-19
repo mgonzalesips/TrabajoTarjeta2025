@@ -1,28 +1,44 @@
-﻿using System;
-
-namespace TarjetaSube
+public class Tarjeta
 {
-    public class Tarjeta
-    {
-        private int saldo;
-        public Tarjeta(int saldo = 0)
-        {
-            this.saldo = saldo;
-        }
+    private decimal saldo;
+    private const decimal LIMITE_SALDO = 40000m;
+    private const decimal TARIFA_BASICA = 1580m;
 
-        public int Saldo
-        {
-            get { return saldo; }
-            set { saldo = value; }
-        }
-        
-        public void Cargar(int importe)
-        {
-            saldo += importe;
-        }
-        public void Pagar()
-        {
-            saldo -= 50;
-        }
+    public decimal Saldo
+    {
+        get { return saldo; }
+    }
+
+    public Tarjeta()
+    {
+        saldo = 0m;
+    }
+
+    public bool Cargar(decimal monto)
+    {
+        decimal[] montosAceptados = { 2000, 3000, 4000, 5000, 8000, 10000, 15000, 20000, 25000, 30000 };
+
+        if (!montosAceptados.Contains(monto))
+            return false;
+
+        if (saldo + monto > LIMITE_SALDO)
+            return false;
+
+        saldo += monto;
+        return true;
+    }
+
+    public bool Descontar(decimal monto)
+    {
+        if (saldo < monto)
+            return false;
+
+        saldo -= monto;
+        return true;
+    }
+
+    public bool PagarPasaje()
+    {
+        return Descontar(TARIFA_BASICA);
     }
 }
