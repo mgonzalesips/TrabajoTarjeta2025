@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+
 public class Tarjeta
 {
     private decimal saldo;
