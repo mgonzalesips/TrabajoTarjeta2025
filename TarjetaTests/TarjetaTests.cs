@@ -124,6 +124,27 @@ namespace TarjetaTests
             Assert.True(resultado);
             Assert.Equal(0, tarjeta.Saldo);
         }
+        [Fact]
+        public void DescontarSaldo_PuedeLlegarHastaMenos1200()
+        {
+            var t = new Tarjeta("003", 0);
+            bool resultado = t.DescontarSaldo(1000);
+
+            Assert.True(resultado);
+            Assert.Equal(-1000, t.Saldo);
+        }
+
+        [Fact]
+        public void DescontarSaldo_NoDebeSuperarMenos1200()
+        {
+            var t = new Tarjeta("004", -1000);
+            bool resultado = t.DescontarSaldo(300);
+
+            Assert.False(resultado);
+            Assert.Equal(-1000, t.Saldo);
+        }
+    }
+}
 
         [Fact]
         public void ToString_DeberiaRetornarFormatoCorrect()
