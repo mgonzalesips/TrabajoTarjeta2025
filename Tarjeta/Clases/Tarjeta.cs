@@ -1,0 +1,52 @@
+namespace Tarjeta.Clases
+{
+   public class Tarjeta
+    {
+        public string Numero { get; set; }
+        public decimal Saldo { get; set; }
+        private const decimal LIMITE_SALDO = 40000;
+
+        public Tarjeta(string numero, decimal saldoInicial = 0)
+        {
+            Numero = numero;
+            Saldo = saldoInicial;
+        }
+
+        public bool Recargar(decimal monto)
+        {
+            decimal[] cargasAceptadas = [2000, 3000, 4000, 5000, 8000, 10000, 15000, 20000, 25000, 30000];
+            
+            // Verificar si el monto está en las cargas aceptadas
+            if (!Array.Exists(cargasAceptadas, x => x == monto))
+            {
+                return false;
+            }
+            
+            // Verificar si no se excede del límite
+            if (Saldo + monto > LIMITE_SALDO)
+            {
+                return false;
+            }
+            
+            Saldo += monto;
+            return true;
+        }
+
+        public bool DescontarSaldo(decimal monto)
+        {
+            // No permitir saldo negativo
+            if (Saldo < monto)
+            {
+                return false;
+            }
+            
+            Saldo -= monto;
+            return true;
+        }
+
+        public override string ToString()
+        {
+            return $"Tarjeta Nº: {Numero}, Saldo: ${Saldo:F2}";
+        }
+    }
+}
