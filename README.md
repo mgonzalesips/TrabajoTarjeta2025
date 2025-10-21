@@ -1,7 +1,22 @@
 # Trabajo Tarjeta 2025
 
-[![.NET](https://github.com/julian-ferrari/TrabajoTarjeta2025/actions/workflows/dotnet.yml/badge.svg)](https://github.com/TU_USUARIO/TU_REPO/actions/workflows/dotnet.yml)
-[![codecov](https://codecov.io/gh/julian-ferrari/TrabajoTarjeta2025/branch/main/graph/badge.svg)](https://codecov.io/gh/TU_USUARIO/TU_REPO)
+## 📊 Cobertura de Código
+
+Este proyecto utiliza **GitHub Actions** y **Codecov** para medir la calidad de los tests.
+
+[![.NET](https://github.com/julian-ferrari/TrabajoTarjeta2025/actions/workflows/dotnet.yml/badge.svg)](https://github.com/julian-ferrari/TrabajoTarjeta2025/actions/workflows/dotnet.yml)
+[![codecov](https://codecov.io/gh/julian-ferrari/TrabajoTarjeta2025/branch/main/graph/badge.svg)](https://codecov.io/gh/julian-ferrari/TrabajoTarjeta2025)
+
+### ¿Cómo funciona?
+
+1. En cada push/PR, GitHub Actions ejecuta los tests
+2. El paquete `coverlet.collector` genera reportes de cobertura
+3. Los reportes se suben automáticamente a Codecov
+4. Codecov analiza qué líneas de código están cubiertas por tests
+
+### Ver reporte completo
+
+Puedes ver el análisis detallado en: https://codecov.io/gh/julian-ferrari/TrabajoTarjeta2025
 
 El siguiente trabajo es un enunciado iterativo. Regularmente se ampliara y/o modificara el enunciado.
 <br><br>
