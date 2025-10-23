@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Tarjeta
 {
-    class Tarjeta
+    public class Tarjeta
     {
         // Atributos
         public float Saldo { get; set; }
