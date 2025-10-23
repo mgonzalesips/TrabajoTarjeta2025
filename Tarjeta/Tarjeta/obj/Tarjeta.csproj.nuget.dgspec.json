@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\PC\\source\\repos\\aguschini\\TrabajoTarjeta2025\\Tarjeta\\Tarjeta\\Tarjeta.csproj": {}
+    "C:\\Users\\Nacho\\Documents\\Tareas\\Tareas 2025\\Mauri POO\\ChiniTarjeta\\Tarjeta\\Tarjeta\\Tarjeta.csproj": {}
   },
   "projects": {
-    "C:\\Users\\PC\\source\\repos\\aguschini\\TrabajoTarjeta2025\\Tarjeta\\Tarjeta\\Tarjeta.csproj": {
+    "C:\\Users\\Nacho\\Documents\\Tareas\\Tareas 2025\\Mauri POO\\ChiniTarjeta\\Tarjeta\\Tarjeta\\Tarjeta.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\PC\\source\\repos\\aguschini\\TrabajoTarjeta2025\\Tarjeta\\Tarjeta\\Tarjeta.csproj",
+        "projectUniqueName": "C:\\Users\\Nacho\\Documents\\Tareas\\Tareas 2025\\Mauri POO\\ChiniTarjeta\\Tarjeta\\Tarjeta\\Tarjeta.csproj",
         "projectName": "Tarjeta",
-        "projectPath": "C:\\Users\\PC\\source\\repos\\aguschini\\TrabajoTarjeta2025\\Tarjeta\\Tarjeta\\Tarjeta.csproj",
-        "packagesPath": "C:\\Users\\PC\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\PC\\source\\repos\\aguschini\\TrabajoTarjeta2025\\Tarjeta\\Tarjeta\\obj\\",
+        "projectPath": "C:\\Users\\Nacho\\Documents\\Tareas\\Tareas 2025\\Mauri POO\\ChiniTarjeta\\Tarjeta\\Tarjeta\\Tarjeta.csproj",
+        "packagesPath": "C:\\Users\\Nacho\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Nacho\\Documents\\Tareas\\Tareas 2025\\Mauri POO\\ChiniTarjeta\\Tarjeta\\Tarjeta\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\PC\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Nacho\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -65,7 +65,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305\\RuntimeIdentifierGraph.json"
         }
       }
     }
