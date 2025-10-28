@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using System.Collections.Generic;
+using Tarjeta;
 
 namespace Tests1
 {
@@ -12,6 +13,10 @@ namespace Tests1
         {
             _tarjeta = new Tarjeta.Tarjeta(1000f, 1);
         }
+
+        // ============================================
+        //            TESTS DE ITERACIÓN 1 
+        // ============================================
 
         [Test]
         public void Constructor_DeberiaCrearTarjetaConSaldoYIdCorrectos()
@@ -113,6 +118,144 @@ namespace Tests1
 
             // Assert
             Assert.That(_tarjeta.Id, Is.EqualTo(2));
+        }
+
+        // ============================================
+        // TESTS DE ITERACIÓN 2 - DESCUENTO DE SALDOS
+        // ============================================
+
+        [Test]
+        public void DescontarSaldo_SaldoSuficiente_DeberiaDescontarYRetornarTrue()
+        {
+            // Arrange
+            _tarjeta = new Tarjeta.Tarjeta(2000f, 1);
+            float montoADescontar = 1580f;
+            float saldoEsperado = 420f; // 2000 - 1580
+
+            // Act
+            bool resultado = _tarjeta.DescontarSaldo(montoADescontar);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(resultado, Is.True, "Debería retornar true cuando hay saldo suficiente");
+                Assert.That(_tarjeta.Saldo, Is.EqualTo(saldoEsperado), "El saldo debería descontarse correctamente");
+            });
+        }
+
+        [Test]
+        public void DescontarSaldo_SaldoInsuficiente_DeberiaRetornarFalseYNoModificarSaldo()
+        {
+            // Arrange
+            _tarjeta = new Tarjeta.Tarjeta(1000f, 1);
+            float montoADescontar = 1580f;
+            float saldoInicial = _tarjeta.Saldo;
+
+            // Act
+            bool resultado = _tarjeta.DescontarSaldo(montoADescontar);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(resultado, Is.False, "Debería retornar false cuando no hay saldo suficiente");
+                Assert.That(_tarjeta.Saldo, Is.EqualTo(saldoInicial), "El saldo no debería cambiar");
+            });
+        }
+
+        [Test]
+        public void DescontarSaldo_SaldoExacto_DeberiaDejarEnCeroYRetornarTrue()
+        {
+            // Arrange
+            _tarjeta = new Tarjeta.Tarjeta(1580f, 1);
+
+            // Act
+            bool resultado = _tarjeta.DescontarSaldo(1580f);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(resultado, Is.True, "Debería retornar true con saldo exacto");
+                Assert.That(_tarjeta.Saldo, Is.EqualTo(0f), "El saldo debería quedar en cero");
+            });
+        }
+
+        [Test]
+        public void DescontarSaldo_MontoMayorQueSaldo_NoDeberiaModificarSaldo()
+        {
+            // Arrange
+            _tarjeta = new Tarjeta.Tarjeta(500f, 1);
+            float saldoInicial = _tarjeta.Saldo;
+
+            // Act
+            bool resultado = _tarjeta.DescontarSaldo(1000f);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(resultado, Is.False);
+                Assert.That(_tarjeta.Saldo, Is.EqualTo(saldoInicial));
+            });
+        }
+
+        [Test]
+        public void DescontarSaldo_MultipleDescuentos_DeberiaDescontarCorrectamente()
+        {
+            // Arrange
+            _tarjeta = new Tarjeta.Tarjeta(5000f, 1);
+
+            // Act & Assert - Primer descuento
+            bool descuento1 = _tarjeta.DescontarSaldo(1580f);
+            Assert.That(descuento1, Is.True);
+            Assert.That(_tarjeta.Saldo, Is.EqualTo(3420f)); // 5000 - 1580
+
+            // Act & Assert - Segundo descuento
+            bool descuento2 = _tarjeta.DescontarSaldo(1580f);
+            Assert.That(descuento2, Is.True);
+            Assert.That(_tarjeta.Saldo, Is.EqualTo(1840f)); // 3420 - 1580
+
+            // Act & Assert - Tercer descuento
+            bool descuento3 = _tarjeta.DescontarSaldo(1580f);
+            Assert.That(descuento3, Is.True);
+            Assert.That(_tarjeta.Saldo, Is.EqualTo(260f)); // 1840 - 1580
+
+            // Act & Assert - Cuarto descuento (debe fallar)
+            bool descuento4 = _tarjeta.DescontarSaldo(1580f);
+            Assert.That(descuento4, Is.False);
+            Assert.That(_tarjeta.Saldo, Is.EqualTo(260f)); // No debe cambiar
+        }
+
+        [Test]
+        public void DescontarSaldo_DescuentoPequeno_DebeFuncionar()
+        {
+            // Arrange
+            _tarjeta = new Tarjeta.Tarjeta(100f, 1);
+
+            // Act
+            bool resultado = _tarjeta.DescontarSaldo(50f);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(resultado, Is.True);
+                Assert.That(_tarjeta.Saldo, Is.EqualTo(50f));
+            });
+        }
+
+        [Test]
+        public void DescontarSaldo_ConSaldoCero_DeberiaRetornarFalse()
+        {
+            // Arrange
+            _tarjeta = new Tarjeta.Tarjeta(0f, 1);
+
+            // Act
+            bool resultado = _tarjeta.DescontarSaldo(100f);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(resultado, Is.False);
+                Assert.That(_tarjeta.Saldo, Is.EqualTo(0f));
+            });
         }
     }
 }
