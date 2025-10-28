@@ -1,4 +1,5 @@
 ﻿using System;
+
 namespace TrabajoTarjeta
 {
     public class Colectivo
@@ -25,3 +26,4 @@ namespace TrabajoTarjeta
         public string ObtenerLinea() => linea;
     }
 }
+
