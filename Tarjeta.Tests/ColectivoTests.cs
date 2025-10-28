@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using Tarjeta.Clases;
+using TarjetaClass = Tarjeta.Clases.Tarjeta;
 
 namespace Tarjeta.Tests
 {
@@ -23,7 +24,7 @@ namespace Tarjeta.Tests
         public void PagarCon_SufficientBalance_ReturnsBoletoAndDeductsSaldo()
         {
             // Arrange
-            var tarjeta = new Tarjeta("123", 2000);
+            var tarjeta = new TarjetaClass("123", 2000);
             var colectivo = new Colectivo("Linea 1");
             decimal monto = 1580;
 
@@ -41,7 +42,7 @@ namespace Tarjeta.Tests
         public void PagarCon_InsufficientBalance_ReturnsNull()
         {
             // Arrange
-            var tarjeta = new Tarjeta("123", 1000);
+            var tarjeta = new TarjetaClass("123", 1000);
             var colectivo = new Colectivo("Linea 1");
             decimal monto = 1580;
 
@@ -57,7 +58,7 @@ namespace Tarjeta.Tests
         public void PagarCon_DefaultMonto()
         {
             // Arrange
-            var tarjeta = new Tarjeta("123", 2000);
+            var tarjeta = new TarjetaClass("123", 2000);
             var colectivo = new Colectivo("Linea 1");
 
             // Act
