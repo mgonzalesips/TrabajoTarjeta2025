@@ -5,6 +5,7 @@ namespace TrabajoTarjeta
     public class Tarjeta
     {
         public double Saldo { get; set; }
+        public const double SALDO_NEGATIVO = 1200;
 
         private readonly int[] saldos = { 2000, 3000, 4000, 5000, 10000, 15000, 20000, 25000, 30000 };
 
@@ -62,7 +63,7 @@ namespace TrabajoTarjeta
 
         public bool Pagar(double monto)
         {
-            if (Saldo >= monto)
+            if (Saldo + SALDO_NEGATIVO >= monto)
             {
                 Saldo -= monto;
                 return true;
