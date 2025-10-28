@@ -5,6 +5,7 @@ namespace Tarjeta.Clases
         public string Numero { get; set; }
         public decimal Saldo { get; set; }
         private const decimal LIMITE_SALDO = 40000;
+        private const decimal LIMITE_NEGATIVO = -1200;
 
         public Tarjeta(string numero, decimal saldoInicial = 0)
         {
@@ -34,14 +35,18 @@ namespace Tarjeta.Clases
 
         public bool DescontarSaldo(decimal monto)
         {
-            // No permitir saldo negativo
-            if (Saldo < monto)
+            // Permitir saldo negativo hasta el límite establecido
+            if (Saldo - monto < LIMITE_NEGATIVO)
             {
                 return false;
             }
             
             Saldo -= monto;
             return true;
+        }
+        public bool PagarBoleto(decimal monto)
+        {
+            return DescontarSaldo(monto);
         }
 
         public virtual bool PagarBoleto(decimal monto)
