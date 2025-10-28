@@ -89,5 +89,50 @@ namespace Tarjeta.Tests
             // Assert
             Assert.AreEqual("Tarjeta Nº: 123456, Saldo: $1234.56", result);
         }
+
+        [Test]
+        public void PagarBoleto_SufficientBalance_ReturnsTrueAndDeductsSaldo()
+        {
+            // Arrange
+            var tarjeta = new TarjetaClass("123", 2000);
+            decimal monto = 1580;
+
+            // Act
+            bool result = tarjeta.PagarBoleto(monto);
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.AreEqual(420, tarjeta.Saldo); // 2000 - 1580
+        }
+
+        [Test]
+        public void PagarBoleto_InsufficientBalance_ReturnsFalseAndDoesNotChangeSaldo()
+        {
+            // Arrange
+            var tarjeta = new TarjetaClass("123", 1000);
+            decimal monto = 1580;
+
+            // Act
+            bool result = tarjeta.PagarBoleto(monto);
+
+            // Assert
+            Assert.IsFalse(result);
+            Assert.AreEqual(1000, tarjeta.Saldo); // Saldo no cambia
+        }
+
+        [Test]
+        public void PagarBoleto_ExactBalance_ReturnsTrueAndSaldoBecomesZero()
+        {
+            // Arrange
+            var tarjeta = new TarjetaClass("123", 1580);
+            decimal monto = 1580;
+
+            // Act
+            bool result = tarjeta.PagarBoleto(monto);
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.AreEqual(0, tarjeta.Saldo);
+        }
     }
 }
