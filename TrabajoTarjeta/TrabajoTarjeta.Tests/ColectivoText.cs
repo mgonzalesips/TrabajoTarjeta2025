@@ -12,11 +12,12 @@ namespace TrabajoTarjeta.Tests
             var tarjeta = new Tarjeta { Saldo = 2000 };
             var colectivo = new Colectivo("143");
 
-            var boleto = colectivo.PagarCon(tarjeta);
+            bool resultado = colectivo.PagarCon(tarjeta, out Boleto boleto);
 
-            Assert.NotNull(boleto);
+            Assert.IsTrue(resultado);
+            Assert.IsNotNull(boleto);
             Assert.AreEqual("143", boleto.Linea);
-            Assert.AreEqual(420, boleto.SaldoRestante);  
+            Assert.AreEqual(420, boleto.SaldoRestante);
         }
 
         [Test]
@@ -25,8 +26,9 @@ namespace TrabajoTarjeta.Tests
             var tarjeta = new Tarjeta { Saldo = 1000 };
             var colectivo = new Colectivo("143");
 
-            var boleto = colectivo.PagarCon(tarjeta);
+            bool resultado = colectivo.PagarCon(tarjeta, out Boleto boleto);
 
+            Assert.IsFalse(resultado);
             Assert.IsNull(boleto);
         }
     }
