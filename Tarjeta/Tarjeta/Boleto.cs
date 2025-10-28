@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Tarjeta
 {
-    class Boleto
+    public class Boleto
     {
         //Atributos
         public float Precio { get; set; }

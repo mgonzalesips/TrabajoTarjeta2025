@@ -15,8 +15,6 @@ Release/
 *.pdb
 *.cache
 *.log
-
-# Archivos de compilación
 *.tmp
 *.bak
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Tarjeta
 {
-    class Colectivo
+    public class Colectivo
     {
         // Atributos
         public string Linea { get; set; }
