@@ -44,6 +44,11 @@ namespace Tarjeta.Clases
             return true;
         }
 
+        public virtual bool PagarBoleto(decimal monto)
+        {
+            return DescontarSaldo(monto);
+        }
+
         public override string ToString()
         {
             return $"Tarjeta Nº: {Numero}, Saldo: ${Saldo:F2}";
