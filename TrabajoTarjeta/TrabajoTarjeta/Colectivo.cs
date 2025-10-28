@@ -1,4 +1,5 @@
 ﻿using System;
+
 namespace TrabajoTarjeta
 {
     public class Colectivo
@@ -11,15 +12,18 @@ namespace TrabajoTarjeta
             this.linea = linea;
         }
 
-        public Boleto PagarCon(Tarjeta tarjeta)
+        public bool PagarCon(Tarjeta tarjeta, out Boleto boleto)
         {
+            boleto = null;
             if (tarjeta.Pagar(TARIFA_BASICA))
             {
-                return new Boleto(linea, tarjeta.Saldo);
+                boleto = new Boleto(linea, tarjeta.Saldo);
+                return true;
             }
-            return null;
+            return false;
         }
 
         public string ObtenerLinea() => linea;
     }
 }
+
