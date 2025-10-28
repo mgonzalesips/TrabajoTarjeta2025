@@ -35,8 +35,8 @@ namespace Tarjeta.Clases
 
         public bool DescontarSaldo(decimal monto)
         {
-            // No permitir saldo negativo
-            if (Saldo < monto)
+            // Permitir saldo negativo hasta el límite establecido
+            if (Saldo - monto < LIMITE_NEGATIVO)
             {
                 return false;
             }
