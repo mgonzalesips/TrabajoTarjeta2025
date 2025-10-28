@@ -4,25 +4,39 @@ namespace TarjetaSube
 {
     public class Tarjeta
     {
-        private int saldo;
-        public Tarjeta(int saldo = 0)
+        private const int TARIFA = 1580;
+        private const int LIMITE_SALDO = 40000;
+
+        int[] montosAceptados = { 2000, 3000, 4000, 5000, 8000, 10000, 15000, 20000, 25000, 30000 };
+
+        public int Saldo { get; private set; }
+
+        public Tarjeta(int saldoInicial = 0)
         {
-            this.saldo = saldo;
+            if (saldoInicial < 0 || saldoInicial > LIMITE_SALDO)
+                throw new ArgumentException("Saldo inicial inválido");
+            Saldo = saldoInicial;
         }
 
-        public int Saldo
+        public void Cargar(int monto)
         {
-            get { return saldo; }
-            set { saldo = value; }
+            if (Array.IndexOf(montosValidos, monto) == -1)
+                throw new ArgumentException("Monto inválido");
+
+            if (Saldo + monto > LIMITE_SALDO)
+                throw new InvalidOperationException("No se puede superar el límite de saldo");
+
+            Saldo += monto;
         }
-        
-        public void Cargar(int importe)
+
+        public bool Pagar()
         {
-            saldo += importe;
-        }
-        public void Pagar()
-        {
-            saldo -= 50;
+            if (Saldo < TARIFA)
+                return false;
+
+            Saldo -= TARIFA;
+            return true;
         }
     }
 }
+
