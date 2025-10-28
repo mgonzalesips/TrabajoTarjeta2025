@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using Tarjeta.Clases;
-using TarjetaClass = Tarjeta.Clases.Tarjeta;
+using TarjetaClase = Tarjeta.Clases.Tarjeta;
 
 namespace Tarjeta.Tests
 {
@@ -24,7 +24,7 @@ namespace Tarjeta.Tests
         public void PagarCon_SufficientBalance_ReturnsBoletoAndDeductsSaldo()
         {
             // Arrange
-            var tarjeta = new TarjetaClass("123", 2000);
+            var tarjeta = new TarjetaClase("123", 2000);
             var colectivo = new Colectivo("Linea 1");
             decimal monto = 1580;
 
@@ -41,24 +41,24 @@ namespace Tarjeta.Tests
         [Test]
         public void PagarCon_InsufficientBalance_ReturnsNull()
         {
-            // Arrange
-            var tarjeta = new TarjetaClass("123", 1000);
+            // Arrange - Saldo insuficiente que excede el límite negativo
+            var tarjeta = new TarjetaClase("123", 0);
             var colectivo = new Colectivo("Linea 1");
-            decimal monto = 1580;
+            decimal monto = 1500; // Excede el límite de -1200
 
             // Act
             var boleto = colectivo.PagarCon(tarjeta, monto);
 
             // Assert
             Assert.IsNull(boleto);
-            Assert.AreEqual(1000, tarjeta.Saldo); // No change
+            Assert.AreEqual(0, tarjeta.Saldo); // No change
         }
 
         [Test]
         public void PagarCon_DefaultMonto()
         {
             // Arrange
-            var tarjeta = new TarjetaClass("123", 2000);
+            var tarjeta = new TarjetaClase("123", 2000);
             var colectivo = new Colectivo("Linea 1");
 
             // Act
@@ -82,5 +82,40 @@ namespace Tarjeta.Tests
             // Assert
             Assert.AreEqual("Línea: Linea 2", result);
         }
+
+        [Test]
+        public void PagarCon_SaldoInsuficientePeroPermiteSaldoNegativo_GeneraBoleto()
+        {
+            // Arrange
+            var tarjeta = new TarjetaClase("123", 500); // Saldo menor al costo del pasaje
+            var colectivo = new Colectivo("Linea 1");
+            decimal monto = 1580;
+
+            // Act
+            var boleto = colectivo.PagarCon(tarjeta, monto);
+
+            // Assert
+            Assert.IsNotNull(boleto);
+            Assert.AreEqual("Linea 1", boleto.Linea);
+            Assert.AreEqual(1580, boleto.Monto);
+            Assert.AreEqual(-1080, tarjeta.Saldo); // Saldo negativo permitido
+        }
+
+        [Test]
+        public void PagarCon_ExcedeLimiteNegativo_NoGeneraBoleto()
+        {
+            // Arrange
+            var tarjeta = new TarjetaClase("123", 0); // Sin saldo
+            var colectivo = new Colectivo("Linea 1");
+            decimal monto = 1500; // Excedería el límite de -1200
+
+            // Act
+            var boleto = colectivo.PagarCon(tarjeta, monto);
+
+            // Assert
+            Assert.IsNull(boleto);
+            Assert.AreEqual(0, tarjeta.Saldo); // Saldo no cambia
+        }
     }
 }
+

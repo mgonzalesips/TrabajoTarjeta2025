@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using Tarjeta.Clases;
-using TarjetaClass = Tarjeta.Clases.Tarjeta;
+using TarjetaClase = Tarjeta.Clases.Tarjeta;
 
 namespace Tarjeta.Tests
 {
@@ -12,7 +12,7 @@ namespace Tarjeta.Tests
         {
             // Arrange
             string nombre = "Juan";
-            var tarjeta = new TarjetaClass("123", 1000);
+            var tarjeta = new TarjetaClase("123", 1000);
             var historial = new List<Boleto> { new Boleto("Linea 1", 1580) };
 
             // Act
@@ -29,7 +29,7 @@ namespace Tarjeta.Tests
         {
             // Arrange
             string nombre = "Juan";
-            var tarjeta = new TarjetaClass("123", 1000);
+            var tarjeta = new TarjetaClase("123", 1000);
 
             // Act
             var usuario = new Usuario(nombre, tarjeta);
@@ -43,7 +43,7 @@ namespace Tarjeta.Tests
         public void ToString_ReturnsCorrectFormat()
         {
             // Arrange
-            var tarjeta = new TarjetaClass("123456", 1234.56m);
+            var tarjeta = new TarjetaClase("123456", 1234.56m);
             var usuario = new Usuario("Juan", tarjeta);
 
             // Act
