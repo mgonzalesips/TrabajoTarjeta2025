@@ -10,6 +10,7 @@ namespace Tarjeta
         public int Id { get; set; }
 
         // Constantes
+        protected const float SALDO_MINIMO = -1200f;
         protected const float SALDO_MAXIMO = 40000f;
 
         // Cargas permitidas
@@ -35,6 +36,23 @@ namespace Tarjeta
                 return;
             }
 
+            // Si hay saldo negativo, primero se descuenta de la carga
+            if (Saldo < 0)
+            {
+                float saldoNegativo = Math.Abs(Saldo);
+                float cargarReal = cantidad - saldoNegativo;
+
+                if (cargarReal > SALDO_MAXIMO)
+                {
+                    Console.WriteLine($"Carga no permitida. El saldo máximo es de ${SALDO_MAXIMO}.");
+                    return;
+                }
+
+                Saldo = cargarReal;
+                Console.WriteLine($"Se descontó el saldo negativo. Nuevo saldo: {Saldo}");
+                return;
+            }
+
             // Verificar que el saldo no exceda el límite
             if (Saldo + cantidad > SALDO_MAXIMO)
             {
@@ -47,26 +65,22 @@ namespace Tarjeta
             Console.WriteLine($"Carga exitosa. El nuevo saldo es: {Saldo}");
         }
 
+        // Método para pagar (virtual para permitir override en clases hijas)
         public virtual bool PuedeDescontar(float monto)
         {
-            // Para la tarea de "Descuento de Saldos" solo verifica que tenga saldo suficiente
-            // En la siguiente tarea (Saldo Negativo) esto cambiará
-            return Saldo >= monto;
+            // Puede descontar si después del descuento el saldo no queda menor al permitido
+            return (Saldo - monto) >= SALDO_MINIMO;
         }
 
-        // Método para descontar saldo
         public virtual bool DescontarSaldo(float monto)
         {
-            // Primero verifica si puede descontar
             if (!PuedeDescontar(monto))
             {
                 return false;
             }
 
-            // Descuenta el monto
             Saldo -= monto;
             return true;
         }
     }
 }
-

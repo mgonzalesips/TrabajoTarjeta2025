@@ -144,25 +144,6 @@ namespace Tests1
         }
 
         [Test]
-        public void DescontarSaldo_SaldoInsuficiente_DeberiaRetornarFalseYNoModificarSaldo()
-        {
-            // Arrange
-            _tarjeta = new Tarjeta.Tarjeta(1000f, 1);
-            float montoADescontar = 1580f;
-            float saldoInicial = _tarjeta.Saldo;
-
-            // Act
-            bool resultado = _tarjeta.DescontarSaldo(montoADescontar);
-
-            // Assert
-            Assert.Multiple(() =>
-            {
-                Assert.That(resultado, Is.False, "Debería retornar false cuando no hay saldo suficiente");
-                Assert.That(_tarjeta.Saldo, Is.EqualTo(saldoInicial), "El saldo no debería cambiar");
-            });
-        }
-
-        [Test]
         public void DescontarSaldo_SaldoExacto_DeberiaDejarEnCeroYRetornarTrue()
         {
             // Arrange
@@ -176,24 +157,6 @@ namespace Tests1
             {
                 Assert.That(resultado, Is.True, "Debería retornar true con saldo exacto");
                 Assert.That(_tarjeta.Saldo, Is.EqualTo(0f), "El saldo debería quedar en cero");
-            });
-        }
-
-        [Test]
-        public void DescontarSaldo_MontoMayorQueSaldo_NoDeberiaModificarSaldo()
-        {
-            // Arrange
-            _tarjeta = new Tarjeta.Tarjeta(500f, 1);
-            float saldoInicial = _tarjeta.Saldo;
-
-            // Act
-            bool resultado = _tarjeta.DescontarSaldo(1000f);
-
-            // Assert
-            Assert.Multiple(() =>
-            {
-                Assert.That(resultado, Is.False);
-                Assert.That(_tarjeta.Saldo, Is.EqualTo(saldoInicial));
             });
         }
 
@@ -241,21 +204,189 @@ namespace Tests1
             });
         }
 
+
+
+        // ============================================
+        //    TESTS DE ITERACIÓN 2 - SALDO NEGATIVO
+        // ============================================
+
         [Test]
-        public void DescontarSaldo_ConSaldoCero_DeberiaRetornarFalse()
+        public void SaldoNegativo_NoPuedeQuedarMenorMenos1200()
         {
             // Arrange
-            _tarjeta = new Tarjeta.Tarjeta(0f, 1);
+            _tarjeta = new Tarjeta.Tarjeta(300f, 1); // Si paga 1580, quedaría en -1280 (excede límite)
+            float saldoInicial = _tarjeta.Saldo;
 
             // Act
-            bool resultado = _tarjeta.DescontarSaldo(100f);
+            bool resultado = _tarjeta.DescontarSaldo(1580f);
 
             // Assert
             Assert.Multiple(() =>
             {
-                Assert.That(resultado, Is.False);
-                Assert.That(_tarjeta.Saldo, Is.EqualTo(0f));
+                Assert.That(resultado, Is.False, "No debería permitir saldo menor a -1200");
+                Assert.That(_tarjeta.Saldo, Is.EqualTo(saldoInicial), "El saldo no debería cambiar");
             });
+        }
+
+        [Test]
+        public void SaldoNegativo_PermiteHastaMenos1200Exacto()
+        {
+            // Arrange
+            _tarjeta = new Tarjeta.Tarjeta(380f, 1); // 380 - 1580 = -1200 (exactamente el límite)
+
+            // Act
+            bool resultado = _tarjeta.DescontarSaldo(1580f);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(resultado, Is.True, "Debería permitir llegar exactamente a -1200");
+                Assert.That(_tarjeta.Saldo, Is.EqualTo(-1200f), "El saldo debería ser exactamente -1200");
+            });
+        }
+
+        [Test]
+        public void SaldoNegativo_PermiteSaldoNegativoDentroDelLimite()
+        {
+            // Arrange
+            _tarjeta = new Tarjeta.Tarjeta(800f, 1); // 800 - 1580 = -780
+
+            // Act
+            bool resultado = _tarjeta.DescontarSaldo(1580f);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(resultado, Is.True, "Debería permitir saldo negativo dentro del límite");
+                Assert.That(_tarjeta.Saldo, Is.EqualTo(-780f), "El saldo debería quedar en -780");
+            });
+        }
+
+        [Test]
+        public void Cargar_ConSaldoNegativo_DescuentaDeudaPrimero()
+        {
+            // Arrange
+            _tarjeta = new Tarjeta.Tarjeta(-500f, 1); // Saldo negativo de -500
+
+            // Act
+            _tarjeta.Cargar(2000f);
+
+            // Assert
+            Assert.That(_tarjeta.Saldo, Is.EqualTo(1500f), "Debería descontar la deuda: 2000 - 500 = 1500");
+        }
+
+        [Test]
+        public void Cargar_ConSaldoNegativo_YSuperaMaximo_NoPermiteCarga()
+        {
+            // Arrange
+            _tarjeta = new Tarjeta.Tarjeta(-1000f, 1); // Saldo negativo
+
+            // Act
+            _tarjeta.Cargar(30000f); // 30000 - 1000 = 29000 (permitido)
+            float saldoDespuesPrimeraCarga = _tarjeta.Saldo;
+
+            _tarjeta.Cargar(15000f); // 29000 + 15000 = 44000 (excede 40000)
+
+            // Assert
+            Assert.That(_tarjeta.Saldo, Is.EqualTo(saldoDespuesPrimeraCarga),
+                "No debería permitir carga que supere el máximo de 40000");
+        }
+
+        [Test]
+        public void ViajePlus_DescuentaCorrectamenteAlRecargar()
+        {
+            // Arrange - Simular un viaje plus
+            _tarjeta = new Tarjeta.Tarjeta(1000f, 1);
+
+            // Act - Realizar primer viaje (queda con 1000 - 1580 = -580)
+            _tarjeta.DescontarSaldo(1580f);
+            float saldoDespuesViajePlus = _tarjeta.Saldo;
+
+            // Assert - Verificar que quedó negativo
+            Assert.That(saldoDespuesViajePlus, Is.EqualTo(-580f), "Debería quedar con saldo negativo");
+
+            // Act - Recargar
+            _tarjeta.Cargar(3000f);
+
+            // Assert - Verificar descuento correcto
+            Assert.That(_tarjeta.Saldo, Is.EqualTo(2420f),
+                "Al recargar 3000 con deuda de -580, debería quedar: 3000 - 580 = 2420");
+        }
+
+        [Test]
+        public void ViajePlus_MultiplesViajes_DescuentaCorrectamente()
+        {
+            // Arrange
+            _tarjeta = new Tarjeta.Tarjeta(2000f, 1);
+
+            // Act - Primer viaje (2000 - 1580 = 420)
+            _tarjeta.DescontarSaldo(1580f);
+            Assert.That(_tarjeta.Saldo, Is.EqualTo(420f));
+
+            // Act - Segundo viaje con plus (420 - 1580 = -1160)
+            _tarjeta.DescontarSaldo(1580f);
+            Assert.That(_tarjeta.Saldo, Is.EqualTo(-1160f), "Debería permitir segundo viaje plus");
+
+            // Act - Recargar
+            _tarjeta.Cargar(5000f);
+
+            // Assert - Verificar que descuenta ambos viajes plus
+            Assert.That(_tarjeta.Saldo, Is.EqualTo(3840f),
+                "Al recargar 5000 con deuda de -1160: 5000 - 1160 = 3840");
+        }
+
+        [Test]
+        public void ViajePlus_NoPermiteTercerViajeQueSupereLimite()
+        {
+            // Arrange
+            _tarjeta = new Tarjeta.Tarjeta(1000f, 1);
+
+            // Act - Primer viaje plus (1000 - 1580 = -580)
+            bool viaje1 = _tarjeta.DescontarSaldo(1580f);
+            Assert.That(viaje1, Is.True);
+            Assert.That(_tarjeta.Saldo, Is.EqualTo(-580f));
+
+            // Act - Intento de segundo viaje plus (-580 - 1580 = -2160, excede -1200)
+            bool viaje2 = _tarjeta.DescontarSaldo(1580f);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(viaje2, Is.False, "No debería permitir viaje que supere -1200");
+                Assert.That(_tarjeta.Saldo, Is.EqualTo(-580f), "El saldo no debería cambiar");
+            });
+        }
+
+        [Test]
+        public void Cargar_ConSaldoNegativoGrande_RestableceCorrectamente()
+        {
+            // Arrange
+            _tarjeta = new Tarjeta.Tarjeta(-1200f, 1); // Máximo negativo permitido
+
+            // Act
+            _tarjeta.Cargar(5000f);
+
+            // Assert
+            Assert.That(_tarjeta.Saldo, Is.EqualTo(3800f),
+                "Con saldo -1200 y recarga de 5000: 5000 - 1200 = 3800");
+        }
+
+        [Test]
+        public void ViajePlus_ConRecargaInsuficiente_DescuentaLoQueSeRecarga()
+        {
+            // Arrange
+            _tarjeta = new Tarjeta.Tarjeta(500f, 1);
+
+            // Act - Viaje que deja negativo (500 - 1580 = -1080)
+            _tarjeta.DescontarSaldo(1580f);
+            Assert.That(_tarjeta.Saldo, Is.EqualTo(-1080f));
+
+            // Act - Recarga pequeña que no cubre toda la deuda
+            _tarjeta.Cargar(2000f);
+
+            // Assert
+            Assert.That(_tarjeta.Saldo, Is.EqualTo(920f),
+                "Con deuda de -1080 y recarga de 2000: 2000 - 1080 = 920");
         }
     }
 }
