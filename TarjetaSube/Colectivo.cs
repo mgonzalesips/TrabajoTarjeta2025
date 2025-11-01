@@ -1,24 +1,37 @@
-namespace TransporteUrbanoRosario
+using System;
+
+namespace TarjetaSube
 {
     public class Colectivo
     {
-        public string Linea { get; }
+        private const decimal TARIFA_BASICA = 1580m;
+        public string Linea { get; private set; }
 
         public Colectivo(string linea)
         {
             Linea = linea;
         }
 
-        public Boleto PagarCon(Tarjeta tarjeta)
+        public Boleto? PagarCon(Tarjeta tarjeta)
         {
-            if (tarjeta.PagarViaje())
+            if (tarjeta == null)
             {
-                return new Boleto(this, DateTime.Now);
+                return null;
             }
-            else
+
+            decimal saldoAntes = tarjeta.ObtenerSaldo();
+
+            if (!tarjeta.Descontar(TARIFA_BASICA))
             {
-                throw new InvalidOperationException("Saldo insuficiente para realizar el viaje.");
+
+                return null;
             }
+
+            decimal saldoDespues = tarjeta.ObtenerSaldo();
+
+            // Crear y devolver el boleto
+            Boleto boleto = new Boleto("Normal", Linea, TARIFA_BASICA, saldoDespues);
+            return boleto;
         }
     }
 }

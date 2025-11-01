@@ -4,39 +4,57 @@ namespace TarjetaSube
 {
     public class Tarjeta
     {
-        private const int TARIFA = 1580;
-        private const int LIMITE_SALDO = 40000;
+        private decimal saldo;
+        private const decimal LIMITE_SALDO = 40000m;
+        private static readonly decimal[] CARGAS_VALIDAS = { 2000m, 3000m, 4000m, 5000m, 8000m, 10000m, 15000m, 20000m, 25000m, 30000m };
 
-        int[] montosAceptados = { 2000, 3000, 4000, 5000, 8000, 10000, 15000, 20000, 25000, 30000 };
-
-        public int Saldo { get; private set; }
-
-        public Tarjeta(int saldoInicial = 0)
+        public Tarjeta()
         {
-            if (saldoInicial < 0 || saldoInicial > LIMITE_SALDO)
-                throw new ArgumentException("Saldo inicial inválido");
-            Saldo = saldoInicial;
+            saldo = 0m;
         }
 
-        public void Cargar(int monto)
+        public decimal ObtenerSaldo()
         {
-            if (Array.IndexOf(montosValidos, monto) == -1)
-                throw new ArgumentException("Monto inválido");
-
-            if (Saldo + monto > LIMITE_SALDO)
-                throw new InvalidOperationException("No se puede superar el límite de saldo");
-
-            Saldo += monto;
+            return saldo;
         }
 
-        public bool Pagar()
+        public bool Cargar(decimal monto)
         {
-            if (Saldo < TARIFA)
+
+            bool montoValido = false;
+            foreach (decimal cargaValida in CARGAS_VALIDAS)
+            {
+                if (monto == cargaValida)
+                {
+                    montoValido = true;
+                    break;
+                }
+            }
+
+            if (!montoValido)
+            {
                 return false;
+            }
 
-            Saldo -= TARIFA;
+            if (saldo + monto > LIMITE_SALDO)
+            {
+                return false;
+            }
+
+            saldo += monto;
+            return true;
+        }
+
+        public bool Descontar(decimal monto)
+        {
+
+            if (saldo < monto)
+            {
+                return false;
+            }
+
+            saldo -= monto;
             return true;
         }
     }
 }
-
