@@ -17,7 +17,7 @@ public class Tarjeta
         saldo = 0m;
     }
 
-    public bool Cargar(decimal monto)
+    public virtual bool Cargar(decimal monto)
     {
         decimal[] montosAceptados = { 2000, 3000, 4000, 5000, 8000, 10000, 15000, 20000, 25000, 30000 };
 
@@ -31,7 +31,7 @@ public class Tarjeta
         return true;
     }
 
-    public bool Descontar(decimal monto)
+    public virtual bool Descontar(decimal monto)
     {
         if (saldo < monto)
             return false;
@@ -40,8 +40,13 @@ public class Tarjeta
         return true;
     }
 
-    public bool PagarPasaje()
+    public virtual bool PagarPasaje()
     {
         return Descontar(TARIFA_BASICA);
+    }
+
+    public virtual decimal ObtenerTarifa()
+    {
+        return TARIFA_BASICA;
     }
 }

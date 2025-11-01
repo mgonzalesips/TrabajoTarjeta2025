@@ -2,7 +2,6 @@
 {
     private string linea;
     private string empresa;
-    private const decimal TARIFA_BASICA = 1580m;
 
     public Colectivo(string linea, string empresa)
     {
@@ -15,12 +14,23 @@
         if (tarjeta == null)
             return null;
 
-        if (tarjeta.Saldo < TARIFA_BASICA)
+        decimal tarifaAPagar = tarjeta.ObtenerTarifa();
+
+        if (tarifaAPagar == 0)
+        {
+            if (tarjeta.PagarPasaje())
+            {
+                return new Boleto(tarifaAPagar, linea, empresa, tarjeta.Saldo);
+            }
+            return null;
+        }
+
+        if (tarjeta.Saldo < tarifaAPagar)
             return null;
 
         if (tarjeta.PagarPasaje())
         {
-            return new Boleto(TARIFA_BASICA, linea, empresa, tarjeta.Saldo);
+            return new Boleto(tarifaAPagar, linea, empresa, tarjeta.Saldo);
         }
 
         return null;

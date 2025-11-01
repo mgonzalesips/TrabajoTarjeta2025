@@ -38,7 +38,7 @@ namespace TarjetaSubeTest
         {
             Tarjeta tarjeta = new Tarjeta();
             tarjeta.Cargar(2000);
-            tarjeta.Descontar(500); // Quedan 1500, menos que 1580
+            tarjeta.Descontar(500); 
 
             Boleto boleto = colectivo.PagarCon(tarjeta);
             Assert.IsNull(boleto);
@@ -49,7 +49,7 @@ namespace TarjetaSubeTest
         {
             Tarjeta tarjeta = new Tarjeta();
             tarjeta.Cargar(2000);
-            tarjeta.Descontar(420); // Quedan exactamente 1580
+            tarjeta.Descontar(420);
 
             Boleto boleto = colectivo.PagarCon(tarjeta);
             Assert.IsNotNull(boleto);
@@ -68,7 +68,7 @@ namespace TarjetaSubeTest
             Boleto boleto = colectivo.PagarCon(tarjeta);
             Assert.IsNotNull(boleto);
             Assert.AreEqual(1580m, boleto.MontoPagado);
-            Assert.AreEqual(1420m, boleto.SaldoRestante); // 3000 - 1580
+            Assert.AreEqual(1420m, boleto.SaldoRestante); 
             Assert.AreEqual("152", boleto.LineaColectivo);
             Assert.AreEqual("Rosario Bus", boleto.Empresa);
         }
@@ -112,6 +112,88 @@ namespace TarjetaSubeTest
             Assert.IsNotNull(boleto);
             Assert.AreEqual("143", boleto.LineaColectivo);
             Assert.AreEqual("Semtur", boleto.Empresa);
+        }
+
+        [Test]
+        public void TestPagarConMedioBoleto()
+        {
+            TarjetaMedioBoleto tarjeta = new TarjetaMedioBoleto();
+            tarjeta.Cargar(3000);
+
+            Boleto boleto = colectivo.PagarCon(tarjeta);
+            
+            Assert.IsNotNull(boleto);
+            Assert.AreEqual(790m, boleto.MontoPagado);
+            Assert.AreEqual(2210m, boleto.SaldoRestante);
+        }
+
+        [Test]
+        public void TestPagarConFranquiciaCompleta()
+        {
+            TarjetaFranquiciaCompleta tarjeta = new TarjetaFranquiciaCompleta();
+
+            Boleto boleto = colectivo.PagarCon(tarjeta);
+            
+            Assert.IsNotNull(boleto);
+            Assert.AreEqual(0m, boleto.MontoPagado);
+            Assert.AreEqual(0m, boleto.SaldoRestante);
+        }
+
+        [Test]
+        public void TestPagarConBoletoGratuitoEstudiantil()
+        {
+            TarjetaBoletoGratuitoEstudiantil tarjeta = new TarjetaBoletoGratuitoEstudiantil();
+
+            Boleto boleto = colectivo.PagarCon(tarjeta);
+            
+            Assert.IsNotNull(boleto);
+            Assert.AreEqual(0m, boleto.MontoPagado);
+            Assert.AreEqual(0m, boleto.SaldoRestante);
+        }
+
+        [Test]
+        public void TestMedioBoletoConSaldoInsuficiente()
+        {
+            TarjetaMedioBoleto tarjeta = new TarjetaMedioBoleto();
+            tarjeta.Cargar(2000);
+            tarjeta.Descontar(1500); // Queda 500, menos que 790
+
+            Boleto boleto = colectivo.PagarCon(tarjeta);
+            Assert.IsNull(boleto);
+        }
+
+        [Test]
+        public void TestPolimorfismoConDiferentesTarjetas()
+        {
+            // Tarjeta normal
+            Tarjeta tarjetaNormal = new Tarjeta();
+            tarjetaNormal.Cargar(3000);
+            Boleto boletoNormal = colectivo.PagarCon(tarjetaNormal);
+            Assert.AreEqual(1580m, boletoNormal.MontoPagado);
+
+            // Medio boleto
+            TarjetaMedioBoleto medioBoleto = new TarjetaMedioBoleto();
+            medioBoleto.Cargar(3000);
+            Boleto boletoMedio = colectivo.PagarCon(medioBoleto);
+            Assert.AreEqual(790m, boletoMedio.MontoPagado);
+
+            // Franquicia completa
+            TarjetaFranquiciaCompleta franquicia = new TarjetaFranquiciaCompleta();
+            Boleto boletoGratis = colectivo.PagarCon(franquicia);
+            Assert.AreEqual(0m, boletoGratis.MontoPagado);
+        }
+
+        [Test]
+        public void TestFranquiciaCompletaMultiplesViajes()
+        {
+            TarjetaFranquiciaCompleta tarjeta = new TarjetaFranquiciaCompleta();
+
+            for (int i = 0; i < 10; i++)
+            {
+                Boleto boleto = colectivo.PagarCon(tarjeta);
+                Assert.IsNotNull(boleto, $"Viaje {i + 1} debería generar boleto");
+                Assert.AreEqual(0m, boleto.MontoPagado);
+            }
         }
     }
 }
