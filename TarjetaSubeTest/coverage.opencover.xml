@@ -2,16 +2,16 @@
 <CoverageSession>
   <Summary numSequencePoints="78" visitedSequencePoints="73" numBranchPoints="16" visitedBranchPoints="14" sequenceCoverage="93.58" branchCoverage="87.5" maxCyclomaticComplexity="35" minCyclomaticComplexity="35" visitedClasses="5" numClasses="5" visitedMethods="20" numMethods="22" />
   <Modules>
-    <Module hash="C3FD78CD-EC4C-43C7-9763-EB04CFDAFA2F">
+    <Module hash="C4BC98CA-BB50-42D3-962D-0BFA1A9A2AFE">
       <ModulePath>TarjetaSube.dll</ModulePath>
-      <ModuleTime>2025-11-01T07:52:54</ModuleTime>
+      <ModuleTime>2025-11-01T08:20:42</ModuleTime>
       <ModuleName>TarjetaSube</ModuleName>
       <Files>
-        <File uid="1" fullPath="C:\Users\PC\Desktop\6to\TrabajoTarjeta2025YaquintoLuchini\TarjetaSube\Boleto.cs" />
-        <File uid="2" fullPath="C:\Users\PC\Desktop\6to\TrabajoTarjeta2025YaquintoLuchini\TarjetaSube\Colectivo.cs" />
-        <File uid="3" fullPath="C:\Users\PC\Desktop\6to\TrabajoTarjeta2025YaquintoLuchini\TarjetaSube\Tarjeta.cs" />
-        <File uid="4" fullPath="C:\Users\PC\Desktop\6to\TrabajoTarjeta2025YaquintoLuchini\TarjetaSube\TarjetaFranquiciaCompleta.cs" />
-        <File uid="5" fullPath="C:\Users\PC\Desktop\6to\TrabajoTarjeta2025YaquintoLuchini\TarjetaSube\TarjetaMedioBoleto.cs" />
+        <File uid="1" fullPath="C:\Users\PC\Desktop\6to\TrabajoTarjeta2025YaquintoLuchini-1\TarjetaSube\Boleto.cs" />
+        <File uid="2" fullPath="C:\Users\PC\Desktop\6to\TrabajoTarjeta2025YaquintoLuchini-1\TarjetaSube\Colectivo.cs" />
+        <File uid="3" fullPath="C:\Users\PC\Desktop\6to\TrabajoTarjeta2025YaquintoLuchini-1\TarjetaSube\Tarjeta.cs" />
+        <File uid="4" fullPath="C:\Users\PC\Desktop\6to\TrabajoTarjeta2025YaquintoLuchini-1\TarjetaSube\TarjetaFranquiciaCompleta.cs" />
+        <File uid="5" fullPath="C:\Users\PC\Desktop\6to\TrabajoTarjeta2025YaquintoLuchini-1\TarjetaSube\TarjetaMedioBoleto.cs" />
       </Files>
       <Classes>
         <Class>
