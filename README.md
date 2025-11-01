@@ -1,4 +1,5 @@
 [![codecov](https://codecov.io/github/LeonYaquinto/TrabajoTarjeta2025YaquintoLuchini/graph/badge.svg?token=20O9VMFR5F)](https://codecov.io/github/LeonYaquinto/TrabajoTarjeta2025YaquintoLuchini)
+
 Trabajo Tarjeta 2025
 El siguiente trabajo es un enunciado iterativo. Regularmente se ampliará y/o modificará el enunciado.
 
