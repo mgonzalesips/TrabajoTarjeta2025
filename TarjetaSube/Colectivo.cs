@@ -20,18 +20,18 @@ namespace TarjetaSube
             }
 
             bool pagoExitoso = tarjeta.Descontar(TARIFA_BASICA);
+
             if (!pagoExitoso)
             {
+
                 return false;
             }
-
-            int saldoDespues = tarjeta.ObtenerSaldo();
 
             Boleto boleto = new Boleto(
                 tipoTarjeta: "Normal",
                 lineaColectivo: Linea,
                 totalAbonado: TARIFA_BASICA,
-                saldoRestante: saldoDespues
+                saldoRestante: tarjeta.ObtenerSaldo()
             );
 
             return true;

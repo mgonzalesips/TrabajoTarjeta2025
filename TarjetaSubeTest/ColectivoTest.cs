@@ -25,7 +25,7 @@ namespace TarjetaSubeTest
             Assert.IsTrue(pagoExitoso);
             Assert.AreEqual(3420, tarjeta.ObtenerSaldo());
 
-            // Validamos que el boleto tendrÃa los valores correctos
+
             Boleto boleto = new Boleto(
                 tipoTarjeta: "Normal",
                 lineaColectivo: "120",
@@ -39,19 +39,7 @@ namespace TarjetaSubeTest
             Assert.AreEqual("Normal", boleto.TipoTarjeta);
         }
 
-        [Test]
-        public void TestPagarConSaldoInsuficiente()
-        {
-            Colectivo colectivo = new Colectivo("133");
-            Tarjeta tarjeta = new Tarjeta();
-            tarjeta.Cargar(2000);
-            tarjeta.Descontar(1580);
-
-            bool pagoExitoso = colectivo.PagarCon(tarjeta);
-
-            Assert.IsFalse(pagoExitoso);
-            Assert.AreEqual(420, tarjeta.ObtenerSaldo());
-        }
+       
 
         [Test]
         public void TestPagarConTarjetaSinSaldo()

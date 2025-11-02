@@ -48,7 +48,7 @@ namespace TarjetaSube
 
         public bool Descontar(int monto)
         {
-            // Permitir saldo negativo hasta el límite
+            // ✅ Permitir usar saldo hasta -1200, pero nunca más allá
             if (saldo - monto < LIMITE_NEGATIVO)
             {
                 return false;
