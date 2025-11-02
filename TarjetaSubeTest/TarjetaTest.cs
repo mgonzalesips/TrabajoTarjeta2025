@@ -10,7 +10,7 @@ namespace TarjetaSubeTest
         public void TestTarjetaNuevaTieneSaldoCero()
         {
             Tarjeta tarjeta = new Tarjeta();
-            Assert.AreEqual(0m, tarjeta.ObtenerSaldo());
+            Assert.AreEqual(0, tarjeta.ObtenerSaldo());
         }
 
         [Test]
@@ -24,7 +24,7 @@ namespace TarjetaSubeTest
         [TestCase(20000)]
         [TestCase(25000)]
         [TestCase(30000)]
-        public void TestCargasValidas(decimal monto)
+        public void TestCargasValidas(int monto)
         {
             Tarjeta tarjeta = new Tarjeta();
             bool resultado = tarjeta.Cargar(monto);
@@ -36,64 +36,71 @@ namespace TarjetaSubeTest
         public void TestCargaInvalida()
         {
             Tarjeta tarjeta = new Tarjeta();
-            bool resultado = tarjeta.Cargar(1000m);
+            bool resultado = tarjeta.Cargar(1000);
             Assert.IsFalse(resultado);
-            Assert.AreEqual(0m, tarjeta.ObtenerSaldo());
+            Assert.AreEqual(0, tarjeta.ObtenerSaldo());
         }
 
         [Test]
         public void TestCargasAcumuladas()
         {
             Tarjeta tarjeta = new Tarjeta();
-            tarjeta.Cargar(5000m);
-            tarjeta.Cargar(3000m);
-            Assert.AreEqual(8000m, tarjeta.ObtenerSaldo());
+            tarjeta.Cargar(5000);
+            tarjeta.Cargar(3000);
+            Assert.AreEqual(8000, tarjeta.ObtenerSaldo());
         }
 
         [Test]
         public void TestLimiteDeSaldo()
         {
             Tarjeta tarjeta = new Tarjeta();
-            tarjeta.Cargar(30000m);
-            tarjeta.Cargar(10000m);
-            // Saldo debe ser 40000 (límite máximo)
-            Assert.AreEqual(40000m, tarjeta.ObtenerSaldo());
+            tarjeta.Cargar(30000);
+            tarjeta.Cargar(10000);
+            Assert.AreEqual(40000, tarjeta.ObtenerSaldo());
 
-            // Intentar cargar más debe fallar
-            bool resultado = tarjeta.Cargar(2000m);
+            bool resultado = tarjeta.Cargar(2000);
             Assert.IsFalse(resultado);
-            Assert.AreEqual(40000m, tarjeta.ObtenerSaldo());
+            Assert.AreEqual(40000, tarjeta.ObtenerSaldo());
         }
 
         [Test]
         public void TestDescontarConSaldoSuficiente()
         {
             Tarjeta tarjeta = new Tarjeta();
-            tarjeta.Cargar(5000m);
-            bool resultado = tarjeta.Descontar(1580m);
+            tarjeta.Cargar(5000);
+            bool resultado = tarjeta.Descontar(1580);
             Assert.IsTrue(resultado);
-            Assert.AreEqual(3420m, tarjeta.ObtenerSaldo());
+            Assert.AreEqual(3420, tarjeta.ObtenerSaldo());
         }
 
         [Test]
         public void TestDescontarConSaldoInsuficiente()
         {
             Tarjeta tarjeta = new Tarjeta();
-            tarjeta.Cargar(2000m);
-            tarjeta.Descontar(1580m);
-            // Intentar descontar más de lo que hay
-            bool resultado = tarjeta.Descontar(1000m);
+            tarjeta.Cargar(2000);
+            tarjeta.Descontar(1580);
+            bool resultado = tarjeta.Descontar(1000);
             Assert.IsFalse(resultado);
-            Assert.AreEqual(420m, tarjeta.ObtenerSaldo());
+            Assert.AreEqual(420, tarjeta.ObtenerSaldo());
         }
 
         [Test]
         public void TestNoPermitirSaldoNegativo()
         {
             Tarjeta tarjeta = new Tarjeta();
-            bool resultado = tarjeta.Descontar(100m);
+            bool resultado = tarjeta.Descontar(100);
             Assert.IsFalse(resultado);
-            Assert.AreEqual(0m, tarjeta.ObtenerSaldo());
+            Assert.AreEqual(0, tarjeta.ObtenerSaldo());
+        }
+
+        [Test]
+        public void TestPagarTarifa()
+        {
+            Tarjeta tarjeta = new Tarjeta();
+            tarjeta.Cargar(2000);
+            bool resultado = tarjeta.Pagar();
+            Assert.IsTrue(resultado);
+            Assert.AreEqual(420, tarjeta.ObtenerSaldo());
         }
     }
 }

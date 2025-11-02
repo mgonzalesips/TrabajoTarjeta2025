@@ -4,57 +4,53 @@ namespace TarjetaSube
 {
     public class Tarjeta
     {
-        private decimal saldo;
-        private const decimal LIMITE_SALDO = 40000m;
-        private static readonly decimal[] CARGAS_VALIDAS = { 2000m, 3000m, 4000m, 5000m, 8000m, 10000m, 15000m, 20000m, 25000m, 30000m };
+        private int saldo;
+        private const int LIMITE_SALDO = 40000;
+        private int[] CARGAS_VALIDAS = { 2000, 3000, 4000, 5000, 8000, 10000, 15000, 20000, 25000, 30000 };
+        private const int TARIFA_PASAJE = 1580;
+
+        // Propiedad pública para tests
+        public int Saldo => saldo;
 
         public Tarjeta()
         {
-            saldo = 0m;
+            saldo = 0;
         }
 
-        public decimal ObtenerSaldo()
+        public int ObtenerSaldo()
         {
             return saldo;
         }
 
-        public bool Cargar(decimal monto)
+        public bool Cargar(int monto)
         {
-
-            bool montoValido = false;
-            foreach (decimal cargaValida in CARGAS_VALIDAS)
+            bool valido = false;
+            foreach (var carga in CARGAS_VALIDAS)
             {
-                if (monto == cargaValida)
+                if (monto == carga)
                 {
-                    montoValido = true;
+                    valido = true;
                     break;
                 }
             }
-
-            if (!montoValido)
-            {
-                return false;
-            }
-
-            if (saldo + monto > LIMITE_SALDO)
-            {
-                return false;
-            }
+            if (!valido) return false;
+            if (saldo + monto > LIMITE_SALDO) return false;
 
             saldo += monto;
             return true;
         }
 
-        public bool Descontar(decimal monto)
+        public bool Descontar(int monto)
         {
-
-            if (saldo < monto)
-            {
-                return false;
-            }
+            if (monto > saldo) return false;
 
             saldo -= monto;
             return true;
+        }
+
+        public bool Pagar()
+        {
+            return Descontar(TARIFA_PASAJE);
         }
     }
 }

@@ -4,7 +4,7 @@ namespace TarjetaSube
 {
     public class Colectivo
     {
-        private const decimal TARIFA_BASICA = 1580m;
+        private const int TARIFA_BASICA = 1580;
         public string Linea { get; private set; }
 
         public Colectivo(string linea)
@@ -12,25 +12,28 @@ namespace TarjetaSube
             Linea = linea;
         }
 
-        public Boleto? PagarCon(Tarjeta tarjeta)
+        public Boleto PagarCon(Tarjeta tarjeta)
         {
             if (tarjeta == null)
             {
-                return null;
+                throw new ArgumentNullException(nameof(tarjeta));
             }
 
-            decimal saldoAntes = tarjeta.ObtenerSaldo();
-
-            if (!tarjeta.Descontar(TARIFA_BASICA))
+            bool pagoExitoso = tarjeta.Descontar(TARIFA_BASICA);
+            if (!pagoExitoso)
             {
-
-                return null;
+                return null; 
             }
 
-            decimal saldoDespues = tarjeta.ObtenerSaldo();
+            int saldoDespues = tarjeta.ObtenerSaldo();
 
-            // Crear y devolver el boleto
-            Boleto boleto = new Boleto("Normal", Linea, TARIFA_BASICA, saldoDespues);
+            Boleto boleto = new Boleto(
+                tipoTarjeta: "Normal",
+                lineaColectivo: Linea,
+                totalAbonado: TARIFA_BASICA,
+                saldoRestante: saldoDespues
+            );
+
             return boleto;
         }
     }
