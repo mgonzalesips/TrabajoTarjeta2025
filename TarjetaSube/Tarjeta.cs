@@ -4,13 +4,13 @@ namespace TarjetaSube
 {
     public class Tarjeta
     {
-        private int saldo;
+        protected int saldo;
         private const int LIMITE_SALDO = 40000;
-        private const int LIMITE_NEGATIVO = -1200; // Nuevo límite de saldo negativo
+        private const int LIMITE_NEGATIVO = -1200;
         private int[] CARGAS_VALIDAS = { 2000, 3000, 4000, 5000, 8000, 10000, 15000, 20000, 25000, 30000 };
-        private const int TARIFA_PASAJE = 1580;
+        protected const int TARIFA_PASAJE = 1580;
 
-        public int Saldo => saldo;
+    public int Saldo => saldo;
 
         public Tarjeta()
         {
@@ -37,7 +37,6 @@ namespace TarjetaSube
             if (!valido) return false;
             if (saldo + monto > LIMITE_SALDO) return false;
 
-            // Si el saldo es negativo, al cargar se descuenta automáticamente la deuda
             saldo += monto;
 
             if (saldo > LIMITE_SALDO)
@@ -46,9 +45,8 @@ namespace TarjetaSube
             return true;
         }
 
-        public bool Descontar(int monto)
+        public virtual bool Descontar(int monto)
         {
-            // ✅ Permitir usar saldo hasta -1200, pero nunca más allá
             if (saldo - monto < LIMITE_NEGATIVO)
             {
                 return false;
@@ -58,9 +56,52 @@ namespace TarjetaSube
             return true;
         }
 
-        public bool Pagar()
+        public virtual bool Pagar()
         {
             return Descontar(TARIFA_PASAJE);
         }
     }
+
+    public class MedioBoleto : Tarjeta
+    {
+        public override bool Descontar(int monto)
+        {
+            int mitad = monto / 2;
+            if (saldo - mitad < -1200) return false;
+            saldo -= mitad;
+            return true;
+        }
+
+        public override bool Pagar()
+        {
+            return Descontar(TARIFA_PASAJE);
+        }
+    }
+
+    public class BoletoGratuito : Tarjeta
+    {
+        public override bool Descontar(int monto)
+        {
+            return true; 
+        }
+
+        public override bool Pagar()
+        {
+            return true;
+        }
+    }
+
+    public class FranquiciaCompleta : Tarjeta
+    {
+        public override bool Descontar(int monto)
+        {
+            return true; 
+        }
+
+        public override bool Pagar()
+        {
+            return true;
+        }
+    }
+
 }
