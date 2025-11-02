@@ -12,7 +12,7 @@ namespace TarjetaSube
             Linea = linea;
         }
 
-        public Boleto PagarCon(Tarjeta tarjeta)
+        public Boleto? PagarCon(Tarjeta tarjeta)
         {
             if (tarjeta == null)
             {
@@ -22,7 +22,7 @@ namespace TarjetaSube
             bool pagoExitoso = tarjeta.Descontar(TARIFA_BASICA);
             if (!pagoExitoso)
             {
-                return null; 
+                return null;
             }
 
             int saldoDespues = tarjeta.ObtenerSaldo();
@@ -36,5 +36,6 @@ namespace TarjetaSube
 
             return boleto;
         }
+
     }
 }
