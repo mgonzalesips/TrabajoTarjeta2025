@@ -6,11 +6,11 @@ namespace TarjetaSube
     {
         public string TipoTarjeta { get; private set; }
         public string LineaColectivo { get; private set; }
-        public decimal TotalAbonado { get; private set; }
-        public decimal SaldoRestante { get; private set; }
+        public int TotalAbonado { get; private set; }
+        public int SaldoRestante { get; private set; }
         public DateTime Fecha { get; private set; }
 
-        public Boleto(string tipoTarjeta, string lineaColectivo, decimal totalAbonado, decimal saldoRestante)
+        public Boleto(string tipoTarjeta, string lineaColectivo, int totalAbonado, int saldoRestante)
         {
             TipoTarjeta = tipoTarjeta;
             LineaColectivo = lineaColectivo;

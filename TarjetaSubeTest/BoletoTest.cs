@@ -9,19 +9,19 @@ namespace TarjetaSubeTest
         [Test]
         public void TestCrearBoleto()
         {
-            Boleto boleto = new Boleto("Normal", "120", 1580m, 3420m);
+            Boleto boleto = new Boleto("Normal", "120", 1580, 3420);
 
             Assert.AreEqual("Normal", boleto.TipoTarjeta);
             Assert.AreEqual("120", boleto.LineaColectivo);
-            Assert.AreEqual(1580m, boleto.TotalAbonado);
-            Assert.AreEqual(3420m, boleto.SaldoRestante);
+            Assert.AreEqual(1580, boleto.TotalAbonado);
+            Assert.AreEqual(3420, boleto.SaldoRestante);
             Assert.IsNotNull(boleto.Fecha);
         }
 
         [Test]
         public void TestBoletoTieneFecha()
         {
-            Boleto boleto = new Boleto("Normal", "115", 1580m, 5000m);
+            Boleto boleto = new Boleto("Normal", "115", 1580, 5000);
             
             Assert.IsTrue(boleto.Fecha <= System.DateTime.Now);
             Assert.IsTrue(boleto.Fecha >= System.DateTime.Now.AddSeconds(-5));
@@ -30,8 +30,8 @@ namespace TarjetaSubeTest
         [Test]
         public void TestPropiedadesBoletoSonCorrectas()
         {
-            decimal totalAbonado = 1580m;
-            decimal saldoRestante = 8420m;
+            int totalAbonado = 1580;
+            int saldoRestante = 8420;
             string linea = "133";
             string tipo = "Normal";
 
