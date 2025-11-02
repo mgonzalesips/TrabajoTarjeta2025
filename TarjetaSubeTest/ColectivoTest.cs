@@ -13,7 +13,7 @@ namespace TarjetaSubeTest
             Assert.AreEqual("120", colectivo.Linea);
         }
 
-    [Test]
+        [Test]
         public void TestPagarConSaldoSuficiente()
         {
             Colectivo colectivo = new Colectivo("120");
@@ -68,6 +68,63 @@ namespace TarjetaSubeTest
             Assert.IsTrue(pago2);
             Assert.AreEqual(6840, tarjeta.ObtenerSaldo());
         }
-    }
 
+        [Test]
+        public void TestPagarConMedioBoleto()
+        {
+            Colectivo colectivo = new Colectivo("200");
+            MedioBoleto tarjeta = new MedioBoleto();
+            tarjeta.Cargar(2000);
+
+            bool pagoExitoso = colectivo.PagarCon(tarjeta);
+
+            Assert.IsTrue(pagoExitoso);
+            Assert.AreEqual(2000 - 1580 / 2, tarjeta.ObtenerSaldo());
+        }
+
+        [Test]
+        public void TestPagarConBoletoGratuito()
+        {
+            Colectivo colectivo = new Colectivo("201");
+            BoletoGratuito tarjeta = new BoletoGratuito();
+
+            bool pagoExitoso = colectivo.PagarCon(tarjeta);
+
+            Assert.IsTrue(pagoExitoso);
+            Assert.AreEqual(0, tarjeta.ObtenerSaldo());
+        }
+
+        [Test]
+        public void TestPagarConFranquiciaCompleta()
+        {
+            Colectivo colectivo = new Colectivo("202");
+            FranquiciaCompleta tarjeta = new FranquiciaCompleta();
+
+            bool pagoExitoso = colectivo.PagarCon(tarjeta);
+
+            Assert.IsTrue(pagoExitoso);
+            Assert.AreEqual(0, tarjeta.ObtenerSaldo()); 
+        }
+
+        [Test]
+        public void TestTipoTarjetaRegistradoEnBoleto()
+        {
+            Colectivo colectivo = new Colectivo("203");
+            MedioBoleto tarjeta = new MedioBoleto();
+            tarjeta.Cargar(2000);
+
+            bool pagoExitoso = colectivo.PagarCon(tarjeta);
+
+            Assert.IsTrue(pagoExitoso);
+
+            Boleto boleto = new Boleto(
+                tipoTarjeta: tarjeta.GetType().Name,
+                lineaColectivo: "203",
+                totalAbonado: 1580,
+                saldoRestante: tarjeta.ObtenerSaldo()
+            );
+
+            Assert.AreEqual("MedioBoleto", boleto.TipoTarjeta);
+        }
+    }
 }

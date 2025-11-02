@@ -77,8 +77,7 @@ namespace TarjetaSubeTest
         public void TestDescontarConSaldoInsuficientePeroDentroDelLimiteNegativo()
         {
             Tarjeta tarjeta = new Tarjeta();
-            // Se intenta descontar más de lo que hay, pero queda dentro del límite negativo
-            bool resultado = tarjeta.Descontar(1000); // saldo inicial 0, debería quedar -1000
+            bool resultado = tarjeta.Descontar(1000); 
             Assert.IsTrue(resultado);
             Assert.AreEqual(-1000, tarjeta.ObtenerSaldo());
         }
@@ -87,8 +86,8 @@ namespace TarjetaSubeTest
         public void TestNoPermitirPasarDelLimiteNegativo()
         {
             Tarjeta tarjeta = new Tarjeta();
-            tarjeta.Descontar(1200); // saldo -1200 permitido
-            bool resultado = tarjeta.Descontar(1); // intentamos pasar a -1201
+            tarjeta.Descontar(1200); 
+            bool resultado = tarjeta.Descontar(1); 
             Assert.IsFalse(resultado);
             Assert.AreEqual(-1200, tarjeta.ObtenerSaldo());
         }
@@ -97,8 +96,8 @@ namespace TarjetaSubeTest
         public void TestRecuperarSaldoNegativoAlCargar()
         {
             Tarjeta tarjeta = new Tarjeta();
-            tarjeta.Descontar(1200); // saldo -1200
-            tarjeta.Cargar(2000); // debería quedar en 800
+            tarjeta.Descontar(1200); 
+            tarjeta.Cargar(2000); 
             Assert.AreEqual(800, tarjeta.ObtenerSaldo());
         }
 
@@ -111,5 +110,35 @@ namespace TarjetaSubeTest
             Assert.IsTrue(resultado);
             Assert.AreEqual(420, tarjeta.ObtenerSaldo());
         }
+        [Test]
+        public void TestMedioBoletoDescuentaMitad()
+        {
+            MedioBoleto tarjeta = new MedioBoleto();
+            tarjeta.Cargar(2000);
+            bool resultado = tarjeta.Pagar();
+            Assert.IsTrue(resultado);
+            Assert.AreEqual(2000 - 1580 / 2, tarjeta.ObtenerSaldo());
+        }
+
+        [Test]
+        public void TestBoletoGratuitoNoDescuenta()
+        {
+            BoletoGratuito tarjeta = new BoletoGratuito();
+            tarjeta.Cargar(2000);
+            bool resultado = tarjeta.Pagar();
+            Assert.IsTrue(resultado);
+            Assert.AreEqual(2000, tarjeta.ObtenerSaldo());
+        }
+
+        [Test]
+        public void TestFranquiciaCompletaSiemprePuedePagar()
+        {
+            FranquiciaCompleta tarjeta = new FranquiciaCompleta();
+            tarjeta.Cargar(0); 
+            bool resultado = tarjeta.Pagar();
+            Assert.IsTrue(resultado);
+            Assert.AreEqual(0, tarjeta.ObtenerSaldo()); 
+        }
     }
+
 }
