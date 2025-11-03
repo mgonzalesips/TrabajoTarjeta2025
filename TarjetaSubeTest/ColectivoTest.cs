@@ -188,11 +188,20 @@ namespace TarjetaSubeTest
         {
             TarjetaFranquiciaCompleta tarjeta = new TarjetaFranquiciaCompleta();
 
-            for (int i = 0; i < 10; i++)
+            // Los primeros dos viajes deben ser exitosos (gratuitos)
+            Boleto boleto1 = colectivo.PagarCon(tarjeta);
+            Assert.IsNotNull(boleto1, "Viaje 1 debería generar boleto");
+            Assert.AreEqual(0m, boleto1.MontoPagado, "Viaje 1 debe ser gratuito");
+
+            Boleto boleto2 = colectivo.PagarCon(tarjeta);
+            Assert.IsNotNull(boleto2, "Viaje 2 debería generar boleto");
+            Assert.AreEqual(0m, boleto2.MontoPagado, "Viaje 2 debe ser gratuito");
+
+            // Del tercer viaje en adelante deben fallar (límite de 2 viajes diarios alcanzado)
+            for (int i = 3; i <= 10; i++)
             {
                 Boleto boleto = colectivo.PagarCon(tarjeta);
-                Assert.IsNotNull(boleto, $"Viaje {i + 1} debería generar boleto");
-                Assert.AreEqual(0m, boleto.MontoPagado);
+                Assert.IsNull(boleto, $"Viaje {i} no debería generar boleto (límite de 2 viajes diarios alcanzado)");
             }
         }
     }
