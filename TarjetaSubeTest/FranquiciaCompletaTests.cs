@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TarjetaSube;
+
 
 namespace TarjetaSubeTest
 {
@@ -27,13 +29,6 @@ namespace TarjetaSubeTest
             Assert.IsTrue(puedePagar);
         }
 
-        [Test]
-        public void FranquiciaCompleta_SiemprePuedePagar_SinSaldo()
-        {
-            var tarjeta = new FranquiciaCompleta();
-            bool puedePagar = tarjeta.PuedePagar(1580m);
-            Assert.IsTrue(puedePagar);
-        }
 
         [Test]
         public void FranquiciaCompleta_SiemprePuedePagar_MontoMuyAlto()

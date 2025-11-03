@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TarjetaSube;
+
 
 namespace TarjetaSubeTest
 {
@@ -24,9 +26,24 @@ namespace TarjetaSubeTest
         {
             var tarjeta = new MedioBoletoEstudiantil();
 
-            // Primer cálculo debería ser mitad (asumiendo que no hay viajes previos)
             decimal monto = tarjeta.CalcularMontoPasaje(1580m);
-            Assert.AreEqual(790m, monto);
+
+            if (EstaEnFranjaHorariaDeTest()) 
+            {
+                Assert.AreEqual(790m, monto);
+            }
+            else
+            {
+                Assert.AreEqual(1580m, monto);
+            }
+        }
+
+        private bool EstaEnFranjaHorariaDeTest()
+        {
+            DateTime ahora = DateTime.Now;
+            return ahora.DayOfWeek >= DayOfWeek.Monday &&
+                   ahora.DayOfWeek <= DayOfWeek.Friday &&
+                   ahora.Hour >= 6 && ahora.Hour < 22;
         }
 
         [Test]
