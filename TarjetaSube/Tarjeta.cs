@@ -71,7 +71,6 @@ namespace TarjetaSube
 
         public virtual void RegistrarViaje(Tiempo tiempo)
         {
-            // Por defecto no hace nada
         }
     }
 
@@ -100,7 +99,6 @@ namespace TarjetaSube
         {
             DateTime ahora = tiempo.Now();
 
-            // Verificar si pasaron 5 minutos desde el último viaje
             if (ultimoViaje.HasValue)
             {
                 TimeSpan diferencia = ahora - ultimoViaje.Value;
@@ -110,7 +108,6 @@ namespace TarjetaSube
                 }
             }
 
-            // Verificar si es un nuevo día
             if (!inicioDelDia.HasValue || ahora.Date != inicioDelDia.Value.Date)
             {
                 inicioDelDia = ahora;
@@ -125,7 +122,6 @@ namespace TarjetaSube
             DateTime ahora = tiempo.Now();
             ultimoViaje = ahora;
 
-            // Si es un nuevo día, reiniciar contador
             if (!inicioDelDia.HasValue || ahora.Date != inicioDelDia.Value.Date)
             {
                 inicioDelDia = ahora;
@@ -139,9 +135,9 @@ namespace TarjetaSube
         {
             if (viajesHoy >= MAX_VIAJES_CON_DESCUENTO)
             {
-                return TARIFA_PASAJE; // Tarifa completa
+                return TARIFA_PASAJE;
             }
-            return TARIFA_PASAJE / 2; // Medio boleto
+            return TARIFA_PASAJE / 2;
         }
 
         public bool DescontarSegunViajes()
@@ -155,26 +151,122 @@ namespace TarjetaSube
 
     public class BoletoGratuito : Tarjeta
     {
+        private DateTime? inicioDelDia;
+        private int viajesHoy;
+        private const int MAX_VIAJES_GRATUITOS = 2;
+
         public override bool Descontar(int monto)
         {
-            return true; 
+            return true;
         }
 
         public override bool Pagar()
         {
             return true;
         }
+
+        public override void RegistrarViaje(Tiempo tiempo)
+        {
+            DateTime ahora = tiempo.Now();
+
+            if (!inicioDelDia.HasValue || ahora.Date != inicioDelDia.Value.Date)
+            {
+                inicioDelDia = ahora;
+                viajesHoy = 0;
+            }
+
+            viajesHoy++;
+        }
+
+        public int ObtenerTarifaActual()
+        {
+            if (viajesHoy >= MAX_VIAJES_GRATUITOS)
+            {
+                return TARIFA_PASAJE;
+            }
+            return 0;
+        }
+
+        public bool DescontarSegunViajes(Tiempo tiempo)
+        {
+            DateTime ahora = tiempo.Now();
+
+            if (!inicioDelDia.HasValue || ahora.Date != inicioDelDia.Value.Date)
+            {
+                inicioDelDia = ahora;
+                viajesHoy = 0;
+            }
+
+            int tarifa = ObtenerTarifaActual();
+
+            if (tarifa == 0)
+            {
+                return true;
+            }
+
+            if (saldo - tarifa < -1200) return false;
+            saldo -= tarifa;
+            return true;
+        }
     }
 
     public class FranquiciaCompleta : Tarjeta
     {
+        private DateTime? inicioDelDia;
+        private int viajesHoy;
+        private const int MAX_VIAJES_GRATUITOS = 2;
+
         public override bool Descontar(int monto)
         {
-            return true; 
+            return true;
         }
 
         public override bool Pagar()
         {
+            return true;
+        }
+
+        public override void RegistrarViaje(Tiempo tiempo)
+        {
+            DateTime ahora = tiempo.Now();
+
+            if (!inicioDelDia.HasValue || ahora.Date != inicioDelDia.Value.Date)
+            {
+                inicioDelDia = ahora;
+                viajesHoy = 0;
+            }
+
+            viajesHoy++;
+        }
+
+        public int ObtenerTarifaActual()
+        {
+            if (viajesHoy >= MAX_VIAJES_GRATUITOS)
+            {
+                return TARIFA_PASAJE;
+            }
+            return 0;
+        }
+
+        public bool DescontarSegunViajes(Tiempo tiempo)
+        {
+            DateTime ahora = tiempo.Now();
+
+            if (!inicioDelDia.HasValue || ahora.Date != inicioDelDia.Value.Date)
+            {
+                inicioDelDia = ahora;
+                viajesHoy = 0;
+            }
+
+            int tarifa = ObtenerTarifaActual();
+
+            if (tarifa == 0)
+            {
+                return true;
+            }
+
+            if (saldo - tarifa < -1200) return false;
+            saldo -= tarifa;
             return true;
         }
     }

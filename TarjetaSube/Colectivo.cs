@@ -37,6 +37,14 @@ namespace TarjetaSube
             {
                 pagoExitoso = medioBoleto.DescontarSegunViajes();
             }
+            else if (tarjeta is BoletoGratuito boletoGratuito)
+            {
+                pagoExitoso = boletoGratuito.DescontarSegunViajes(tiempo);
+            }
+            else if (tarjeta is FranquiciaCompleta franquiciaCompleta)
+            {
+                pagoExitoso = franquiciaCompleta.DescontarSegunViajes(tiempo);
+            }
             else
             {
                 pagoExitoso = tarjeta.Descontar(TARIFA_BASICA);
@@ -48,7 +56,7 @@ namespace TarjetaSube
             }
 
             int saldoNuevo = tarjeta.ObtenerSaldo();
-            
+
             int totalAbonado = saldoAnterior - saldoNuevo;
 
             tarjeta.RegistrarViaje(tiempo);

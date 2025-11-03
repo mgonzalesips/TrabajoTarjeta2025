@@ -18,7 +18,7 @@ namespace TarjetaSubeTest
         {
             Tarjeta tarjeta1 = new Tarjeta();
             Tarjeta tarjeta2 = new Tarjeta();
-            
+
             Assert.AreNotEqual(tarjeta1.Id, tarjeta2.Id);
             Assert.Greater(tarjeta1.Id, 0);
             Assert.Greater(tarjeta2.Id, 0);
@@ -29,10 +29,10 @@ namespace TarjetaSubeTest
         {
             Tarjeta tarjeta1 = new Tarjeta();
             int id1 = tarjeta1.Id;
-            
+
             Tarjeta tarjeta2 = new Tarjeta();
             int id2 = tarjeta2.Id;
-            
+
             Assert.AreEqual(id1 + 1, id2);
         }
 
@@ -100,7 +100,7 @@ namespace TarjetaSubeTest
         public void TestDescontarConSaldoInsuficientePeroDentroDelLimiteNegativo()
         {
             Tarjeta tarjeta = new Tarjeta();
-            bool resultado = tarjeta.Descontar(1000); 
+            bool resultado = tarjeta.Descontar(1000);
             Assert.IsTrue(resultado);
             Assert.AreEqual(-1000, tarjeta.ObtenerSaldo());
         }
@@ -109,8 +109,8 @@ namespace TarjetaSubeTest
         public void TestNoPermitirPasarDelLimiteNegativo()
         {
             Tarjeta tarjeta = new Tarjeta();
-            tarjeta.Descontar(1200); 
-            bool resultado = tarjeta.Descontar(1); 
+            tarjeta.Descontar(1200);
+            bool resultado = tarjeta.Descontar(1);
             Assert.IsFalse(resultado);
             Assert.AreEqual(-1200, tarjeta.ObtenerSaldo());
         }
@@ -119,8 +119,8 @@ namespace TarjetaSubeTest
         public void TestRecuperarSaldoNegativoAlCargar()
         {
             Tarjeta tarjeta = new Tarjeta();
-            tarjeta.Descontar(1200); 
-            tarjeta.Cargar(2000); 
+            tarjeta.Descontar(1200);
+            tarjeta.Cargar(2000);
             Assert.AreEqual(800, tarjeta.ObtenerSaldo());
         }
 
@@ -149,18 +149,38 @@ namespace TarjetaSubeTest
         {
             MedioBoleto tarjeta1 = new MedioBoleto();
             MedioBoleto tarjeta2 = new MedioBoleto();
-            
+
             Assert.AreNotEqual(tarjeta1.Id, tarjeta2.Id);
         }
 
         [Test]
         public void TestBoletoGratuitoNoDescuenta()
         {
+            TiempoFalso tiempoFalso = new TiempoFalso();
             BoletoGratuito tarjeta = new BoletoGratuito();
             tarjeta.Cargar(2000);
-            bool resultado = tarjeta.Pagar();
+
+            bool resultado = tarjeta.DescontarSegunViajes(tiempoFalso);
             Assert.IsTrue(resultado);
             Assert.AreEqual(2000, tarjeta.ObtenerSaldo());
+        }
+
+        [Test]
+        public void TestBoletoGratuitoTercerViajeDescuentaTarifaCompleta()
+        {
+            TiempoFalso tiempoFalso = new TiempoFalso();
+            BoletoGratuito tarjeta = new BoletoGratuito();
+            tarjeta.Cargar(5000);
+
+            tarjeta.DescontarSegunViajes(tiempoFalso);
+            tarjeta.RegistrarViaje(tiempoFalso);
+
+            tarjeta.DescontarSegunViajes(tiempoFalso);
+            tarjeta.RegistrarViaje(tiempoFalso);
+
+            bool resultado = tarjeta.DescontarSegunViajes(tiempoFalso);
+            Assert.IsTrue(resultado);
+            Assert.AreEqual(3420, tarjeta.ObtenerSaldo());
         }
 
         [Test]
@@ -168,7 +188,7 @@ namespace TarjetaSubeTest
         {
             BoletoGratuito tarjeta1 = new BoletoGratuito();
             BoletoGratuito tarjeta2 = new BoletoGratuito();
-            
+
             Assert.AreNotEqual(tarjeta1.Id, tarjeta2.Id);
         }
 
@@ -176,10 +196,10 @@ namespace TarjetaSubeTest
         public void TestFranquiciaCompletaSiemprePuedePagar()
         {
             FranquiciaCompleta tarjeta = new FranquiciaCompleta();
-            tarjeta.Cargar(0); 
+            tarjeta.Cargar(0);
             bool resultado = tarjeta.Pagar();
             Assert.IsTrue(resultado);
-            Assert.AreEqual(0, tarjeta.ObtenerSaldo()); 
+            Assert.AreEqual(0, tarjeta.ObtenerSaldo());
         }
 
         [Test]
@@ -187,7 +207,7 @@ namespace TarjetaSubeTest
         {
             FranquiciaCompleta tarjeta1 = new FranquiciaCompleta();
             FranquiciaCompleta tarjeta2 = new FranquiciaCompleta();
-            
+
             Assert.AreNotEqual(tarjeta1.Id, tarjeta2.Id);
         }
     }
