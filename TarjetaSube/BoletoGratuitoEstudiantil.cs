@@ -7,16 +7,38 @@ public class BoletoGratuitoEstudiantil : Tarjeta
 {
     private Dictionary<DateTime, int> viajesGratuitosPorDia = new Dictionary<DateTime, int>();
     private DateTime? ultimoViaje = null;
+    private readonly Func<DateTime> _nowProvider;
+
+    // Constructor para producción
+    public BoletoGratuitoEstudiantil() : this(() => DateTime.Now)
+    {
+    }
+
+    // Constructor para testing - INYECCIÓN DE TIEMPO
+    public BoletoGratuitoEstudiantil(Func<DateTime> nowProvider)
+    {
+        _nowProvider = nowProvider;
+    }
 
     // Método para debugging
     public void DebugInfo()
     {
-        Console.WriteLine($"DEBUG BoletoGratuito - Viajes hoy: {viajesGratuitosPorDia.GetValueOrDefault(DateTime.Today, 0)}, Último viaje: {ultimoViaje}");
+        Console.WriteLine($"DEBUG BoletoGratuito - Viajes hoy: {viajesGratuitosPorDia.GetValueOrDefault(GetHoy(), 0)}, Último viaje: {ultimoViaje}");
+    }
+
+    private DateTime GetHoy()
+    {
+        return _nowProvider().Date;
+    }
+
+    private DateTime GetAhora()
+    {
+        return _nowProvider();
     }
 
     public override decimal CalcularMontoPasaje(decimal tarifaBase)
     {
-        var hoy = DateTime.Today;
+        var hoy = GetHoy();
 
         if (!viajesGratuitosPorDia.ContainsKey(hoy))
             viajesGratuitosPorDia[hoy] = 0;
@@ -45,7 +67,7 @@ public class BoletoGratuitoEstudiantil : Tarjeta
         // Verificar tiempo mínimo entre viajes (5 segundos)
         if (ultimoViaje.HasValue)
         {
-            double segundosDesdeUltimoViaje = (DateTime.Now - ultimoViaje.Value).TotalSeconds;
+            double segundosDesdeUltimoViaje = (GetAhora() - ultimoViaje.Value).TotalSeconds;
             Console.WriteLine($"DEBUG BoletoGratuito - Segundos desde último viaje: {segundosDesdeUltimoViaje}");
 
             if (segundosDesdeUltimoViaje < 5)
@@ -73,7 +95,7 @@ public class BoletoGratuitoEstudiantil : Tarjeta
             return false;
         }
 
-        var hoy = DateTime.Today;
+        var hoy = GetHoy();
 
         // Registrar el viaje gratuito
         if (!viajesGratuitosPorDia.ContainsKey(hoy))
@@ -85,7 +107,7 @@ public class BoletoGratuitoEstudiantil : Tarjeta
             viajesGratuitosPorDia[hoy]++;
         }
 
-        ultimoViaje = DateTime.Now;
+        ultimoViaje = GetAhora();
 
         Console.WriteLine($"DEBUG BoletoGratuito Descontar - Viaje registrado. Viajes gratuitos hoy: {viajesGratuitosPorDia[hoy]}, Último viaje: {ultimoViaje}");
 
@@ -106,7 +128,7 @@ public class BoletoGratuitoEstudiantil : Tarjeta
 
     public bool EstaDentroDeFranjaHoraria()
     {
-        DateTime ahora = DateTime.Now;
+        DateTime ahora = GetAhora();
         DayOfWeek dia = ahora.DayOfWeek;
         int hora = ahora.Hour;
 

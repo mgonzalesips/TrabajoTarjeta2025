@@ -7,16 +7,38 @@ public class MedioBoletoEstudiantil : Tarjeta
 {
     private Dictionary<DateTime, int> viajesPorDia = new Dictionary<DateTime, int>();
     private DateTime? ultimoViaje = null;
+    private readonly Func<DateTime> _nowProvider;
+
+    // Constructor para producción
+    public MedioBoletoEstudiantil() : this(() => DateTime.Now)
+    {
+    }
+
+    // Constructor para testing - INYECCIÓN DE TIEMPO
+    public MedioBoletoEstudiantil(Func<DateTime> nowProvider)
+    {
+        _nowProvider = nowProvider;
+    }
 
     // PARA DEBUG - nos permite ver qué está pasando
     public void DebugInfo()
     {
-        Console.WriteLine($"DEBUG - Último viaje: {ultimoViaje}, Viajes hoy: {viajesPorDia.GetValueOrDefault(DateTime.Today, 0)}");
+        Console.WriteLine($"DEBUG - Último viaje: {ultimoViaje}, Viajes hoy: {viajesPorDia.GetValueOrDefault(GetHoy(), 0)}");
+    }
+
+    private DateTime GetHoy()
+    {
+        return _nowProvider().Date;
+    }
+
+    private DateTime GetAhora()
+    {
+        return _nowProvider();
     }
 
     public override decimal CalcularMontoPasaje(decimal tarifaBase)
     {
-        var hoy = DateTime.Today;
+        var hoy = GetHoy();
 
         if (!viajesPorDia.ContainsKey(hoy))
             viajesPorDia[hoy] = 0;
@@ -41,7 +63,7 @@ public class MedioBoletoEstudiantil : Tarjeta
         // Verificar tiempo mínimo entre viajes
         if (ultimoViaje.HasValue)
         {
-            double segundosDesdeUltimoViaje = (DateTime.Now - ultimoViaje.Value).TotalSeconds;
+            double segundosDesdeUltimoViaje = (GetAhora() - ultimoViaje.Value).TotalSeconds;
             Console.WriteLine($"DEBUG - Segundos desde último viaje: {segundosDesdeUltimoViaje}");
 
             if (segundosDesdeUltimoViaje < 5)
@@ -52,7 +74,7 @@ public class MedioBoletoEstudiantil : Tarjeta
         }
 
         // Verificar límite de 2 viajes por día
-        var hoy = DateTime.Today;
+        var hoy = GetHoy();
         int viajesHoy = viajesPorDia.GetValueOrDefault(hoy, 0);
         Console.WriteLine($"DEBUG - Viajes hoy: {viajesHoy}");
 
@@ -81,12 +103,12 @@ public class MedioBoletoEstudiantil : Tarjeta
         }
 
         // Registrar el viaje
-        var hoy = DateTime.Today;
+        var hoy = GetHoy();
         if (!viajesPorDia.ContainsKey(hoy))
             viajesPorDia[hoy] = 0;
 
         viajesPorDia[hoy]++;
-        ultimoViaje = DateTime.Now;
+        ultimoViaje = GetAhora();
 
         Console.WriteLine($"DEBUG Descontar - Viaje registrado. Viajes hoy: {viajesPorDia[hoy]}, Último viaje: {ultimoViaje}");
 
@@ -99,7 +121,7 @@ public class MedioBoletoEstudiantil : Tarjeta
 
     private bool EstaDentroDeFranjaHoraria()
     {
-        DateTime ahora = DateTime.Now;
+        DateTime ahora = GetAhora();
         DayOfWeek dia = ahora.DayOfWeek;
         int hora = ahora.Hour;
 
