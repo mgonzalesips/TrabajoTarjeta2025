@@ -1,4 +1,4 @@
-name: .NET CI/CD with Code Coverage
+name: .NET CI/CD with Code Coverage (Windows)
 
 on:
   push:
@@ -8,37 +8,39 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest  # ← Linux es más estable para cobertura
+    runs-on: windows-latest 
 
-    steps:
+    steps:  
       - name: Checkout code
         uses: actions/checkout@v4
 
+      
       - name: Setup .NET 5.0
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '5.0.x'
 
+      
       - name: Restore dependencies
         run: dotnet restore
 
+      
       - name: Build
         run: dotnet build --no-restore --configuration Release
 
+      
       - name: Run tests with coverage
         run: |
-          dotnet test --no-build --configuration Release \
-            --collect:"Code Coverage" \
-            --results-directory:./TestResults \
+          dotnet test --no-build --configuration Release `
+            --collect:"XPlat Code Coverage" `
+            --results-directory:TestResults `
             --logger trx
 
-      - name: Find coverage file
-        run: find ./TestResults -name "*.cobertura.xml" -ls
-
+      
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./TestResults/**/coverage.cobertura.xml
+          files: ./TestResults/*/.cobertura.xml
           fail_ci_if_error: false
           verbose: true
