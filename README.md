@@ -1,4 +1,4 @@
-[![codecov](https://codecov.io/github/AgusCaffita/TrabajoTarjeta2025/graph/badge.svg?token=QH7BEFZM76)](https://codecov.io/github/AgusCaffita/TrabajoTarjeta2025)
+[[![codecov](https://codecov.io/github/AgusCaffita/TrabajoTarjeta2025/graph/badge.svg?token=QH7BEFZM76)](https://codecov.io/github/AgusCaffita/TrabajoTarjeta2025)](https://app.codecov.io/gh/AgusCaffita/TrabajoTarjeta2025)
 
 # Trabajo Tarjeta 2025
 
