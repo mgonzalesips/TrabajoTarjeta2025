@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using TarjetaSube;
 
 [TestFixture]
 public class BoletoInformacionTests
