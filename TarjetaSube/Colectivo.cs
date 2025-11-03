@@ -6,35 +6,63 @@ namespace TarjetaSube
     {
         private const int TARIFA_BASICA = 1580;
         public string Linea { get; private set; }
+        private Tiempo tiempo;
 
-    public Colectivo(string linea)
+        public Colectivo(string linea) : this(linea, new Tiempo())
         {
-            Linea = linea;
         }
 
-        public bool PagarCon(Tarjeta tarjeta)
+        public Colectivo(string linea, Tiempo tiempo)
+        {
+            Linea = linea;
+            this.tiempo = tiempo;
+        }
+
+        public Boleto? PagarCon(Tarjeta tarjeta)
         {
             if (tarjeta == null)
             {
                 throw new ArgumentNullException(nameof(tarjeta));
             }
 
-            bool pagoExitoso = tarjeta.Descontar(TARIFA_BASICA);
+            if (!tarjeta.PuedeViajar(tiempo))
+            {
+                return null;
+            }
+
+            int saldoAnterior = tarjeta.ObtenerSaldo();
+            bool pagoExitoso;
+
+            if (tarjeta is MedioBoleto medioBoleto)
+            {
+                pagoExitoso = medioBoleto.DescontarSegunViajes();
+            }
+            else
+            {
+                pagoExitoso = tarjeta.Descontar(TARIFA_BASICA);
+            }
 
             if (!pagoExitoso)
             {
-                return false;
+                return null;
             }
+
+            int saldoNuevo = tarjeta.ObtenerSaldo();
+            
+            int totalAbonado = saldoAnterior - saldoNuevo;
+
+            tarjeta.RegistrarViaje(tiempo);
 
             Boleto boleto = new Boleto(
                 tipoTarjeta: tarjeta.GetType().Name,
                 lineaColectivo: Linea,
-                totalAbonado: TARIFA_BASICA,
-                saldoRestante: tarjeta.ObtenerSaldo()
+                totalAbonado: totalAbonado,
+                saldoRestante: saldoNuevo,
+                idTarjeta: tarjeta.Id,
+                tiempo: tiempo
             );
 
-            return true;
+            return boleto;
         }
     }
-
 }
