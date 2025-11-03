@@ -12,7 +12,7 @@ namespace TarjetaSubeTest
         {
             Tiempo tiempo = new Tiempo();
             DateTime ahora = tiempo.Now();
-            
+
             Assert.IsTrue(ahora <= DateTime.Now);
             Assert.IsTrue(ahora >= DateTime.Now.AddSeconds(-1));
         }
@@ -22,7 +22,7 @@ namespace TarjetaSubeTest
         {
             TiempoFalso tiempoFalso = new TiempoFalso();
             DateTime fecha = tiempoFalso.Now();
-            
+
             Assert.AreEqual(2024, fecha.Year);
             Assert.AreEqual(10, fecha.Month);
             Assert.AreEqual(14, fecha.Day);
@@ -35,10 +35,10 @@ namespace TarjetaSubeTest
         public void TestTiempoFalsoAgregarDias()
         {
             TiempoFalso tiempoFalso = new TiempoFalso();
-            
+
             tiempoFalso.AgregarDias(1);
             DateTime fecha = tiempoFalso.Now();
-            
+
             Assert.AreEqual(15, fecha.Day);
             Assert.AreEqual(10, fecha.Month);
             Assert.AreEqual(2024, fecha.Year);
@@ -48,10 +48,10 @@ namespace TarjetaSubeTest
         public void TestTiempoFalsoAgregarMinutos()
         {
             TiempoFalso tiempoFalso = new TiempoFalso();
-            
+
             tiempoFalso.AgregarMinutos(30);
             DateTime fecha = tiempoFalso.Now();
-            
+
             Assert.AreEqual(0, fecha.Hour);
             Assert.AreEqual(30, fecha.Minute);
         }
@@ -60,23 +60,23 @@ namespace TarjetaSubeTest
         public void TestTiempoFalsoAgregarMinutosCambiaDia()
         {
             TiempoFalso tiempoFalso = new TiempoFalso();
-            
+
             tiempoFalso.AgregarMinutos(1440);
             DateTime fecha = tiempoFalso.Now();
-            
-            Assert.AreEqual(15, fecha.Day); 
+
+            Assert.AreEqual(15, fecha.Day);
         }
 
         [Test]
         public void TestTiempoFalsoAgregarDiasYMinutos()
         {
             TiempoFalso tiempoFalso = new TiempoFalso();
-            
+
             tiempoFalso.AgregarDias(2);
-            tiempoFalso.AgregarMinutos(125); 
-            
+            tiempoFalso.AgregarMinutos(125);
+
             DateTime fecha = tiempoFalso.Now();
-            
+
             Assert.AreEqual(16, fecha.Day);
             Assert.AreEqual(10, fecha.Month);
             Assert.AreEqual(2, fecha.Hour);

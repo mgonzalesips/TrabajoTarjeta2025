@@ -7,7 +7,7 @@ namespace TarjetaSube
         public Tiempo()
         {
         }
-        
+
         public virtual DateTime Now()
         {
             return DateTime.Now;

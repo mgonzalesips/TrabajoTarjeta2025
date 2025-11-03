@@ -23,7 +23,7 @@ namespace TarjetaSubeTest
         public void TestBoletoTieneFecha()
         {
             Boleto boleto = new Boleto("Normal", "115", 1580, 5000, 2);
-            
+
             Assert.IsTrue(boleto.Fecha <= System.DateTime.Now);
             Assert.IsTrue(boleto.Fecha >= System.DateTime.Now.AddSeconds(-5));
         }
@@ -84,7 +84,7 @@ namespace TarjetaSubeTest
             Assert.IsNotNull(boleto);
             Assert.AreEqual("MedioBoleto", boleto.TipoTarjeta);
             Assert.AreEqual("200", boleto.LineaColectivo);
-            Assert.AreEqual(790, boleto.TotalAbonado); 
+            Assert.AreEqual(790, boleto.TotalAbonado);
             Assert.AreEqual(1210, boleto.SaldoRestante);
             Assert.AreEqual(tarjeta.Id, boleto.IdTarjeta);
         }
@@ -92,7 +92,8 @@ namespace TarjetaSubeTest
         [Test]
         public void TestBoletoConBoletoGratuito()
         {
-            Colectivo colectivo = new Colectivo("201");
+            TiempoFalso tiempoFalso = new TiempoFalso();
+            Colectivo colectivo = new Colectivo("201", tiempoFalso);
             BoletoGratuito tarjeta = new BoletoGratuito();
 
             Boleto boleto = colectivo.PagarCon(tarjeta);
@@ -100,9 +101,28 @@ namespace TarjetaSubeTest
             Assert.IsNotNull(boleto);
             Assert.AreEqual("BoletoGratuito", boleto.TipoTarjeta);
             Assert.AreEqual("201", boleto.LineaColectivo);
-            Assert.AreEqual(0, boleto.TotalAbonado); 
+            Assert.AreEqual(0, boleto.TotalAbonado);
             Assert.AreEqual(0, boleto.SaldoRestante);
             Assert.AreEqual(tarjeta.Id, boleto.IdTarjeta);
+        }
+
+        [Test]
+        public void TestBoletoGratuitoTercerViajePagaTarifaCompleta()
+        {
+            TiempoFalso tiempoFalso = new TiempoFalso();
+            Colectivo colectivo = new Colectivo("201", tiempoFalso);
+            BoletoGratuito tarjeta = new BoletoGratuito();
+            tarjeta.Cargar(5000);
+
+            colectivo.PagarCon(tarjeta);
+            colectivo.PagarCon(tarjeta);
+
+            Boleto boleto3 = colectivo.PagarCon(tarjeta);
+
+            Assert.IsNotNull(boleto3);
+            Assert.AreEqual("BoletoGratuito", boleto3.TipoTarjeta);
+            Assert.AreEqual(1580, boleto3.TotalAbonado);
+            Assert.AreEqual(3420, boleto3.SaldoRestante);
         }
 
         [Test]
@@ -116,7 +136,7 @@ namespace TarjetaSubeTest
             Assert.IsNotNull(boleto);
             Assert.AreEqual("FranquiciaCompleta", boleto.TipoTarjeta);
             Assert.AreEqual("202", boleto.LineaColectivo);
-            Assert.AreEqual(0, boleto.TotalAbonado); 
+            Assert.AreEqual(0, boleto.TotalAbonado);
             Assert.AreEqual(0, boleto.SaldoRestante);
             Assert.AreEqual(tarjeta.Id, boleto.IdTarjeta);
         }
@@ -126,16 +146,16 @@ namespace TarjetaSubeTest
         {
             Colectivo colectivo = new Colectivo("150");
             Tarjeta tarjeta = new Tarjeta();
-            
-            tarjeta.Descontar(800); 
-            
+
+            tarjeta.Descontar(800);
+
             tarjeta.Cargar(2000);
-            
+
             Boleto boleto = colectivo.PagarCon(tarjeta);
 
             Assert.IsNotNull(boleto);
             Assert.AreEqual(1580, boleto.TotalAbonado);
-            Assert.AreEqual(-380, boleto.SaldoRestante); 
+            Assert.AreEqual(-380, boleto.SaldoRestante);
         }
 
         [Test]
@@ -143,16 +163,16 @@ namespace TarjetaSubeTest
         {
             Colectivo colectivo = new Colectivo("160");
             Tarjeta tarjeta = new Tarjeta();
-            
-            tarjeta.Descontar(1200); 
-            
-            tarjeta.Cargar(2000); 
-            
+
+            tarjeta.Descontar(1200);
+
+            tarjeta.Cargar(2000);
+
             Boleto boleto = colectivo.PagarCon(tarjeta);
 
             Assert.IsNotNull(boleto);
             Assert.AreEqual(1580, boleto.TotalAbonado);
-            Assert.AreEqual(-780, boleto.SaldoRestante); 
+            Assert.AreEqual(-780, boleto.SaldoRestante);
         }
     }
 }
