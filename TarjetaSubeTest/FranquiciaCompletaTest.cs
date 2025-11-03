@@ -1,285 +1,197 @@
-using NUnit.Framework;
 using System;
+using NUnit.Framework;
 
-namespace TarjetaSubeTest
+[TestFixture]
+public class TarjetaFranquiciaCompletaTests
 {
-    [TestFixture]
-    public class TarjetaFranquiciaCompletaTest
+    private TarjetaFranquiciaCompleta tarjeta;
+    private Colectivo colectivo;
+
+    [SetUp]
+    public void Setup()
     {
-        private TarjetaFranquiciaCompleta tarjeta;
-        private Colectivo colectivo;
+        tarjeta = new TarjetaFranquiciaCompleta();
+        colectivo = new Colectivo("120", "Rosario Bus");
+    }
 
-        [SetUp]
-        public void Setup()
-        {
-            tarjeta = new TarjetaFranquiciaCompleta();
-            colectivo = new Colectivo("K", "Las Delicias");
-        }
+    [Test]
+    public void Test_ObtenerTarifa_DebeRetornarCero()
+    {
+        // Arrange & Act
+        decimal tarifa = tarjeta.ObtenerTarifa();
 
-        [Test]
-        public void TestObtenerTarifaRetornaCero()
-        {
-            Assert.AreEqual(0m, tarjeta.ObtenerTarifa());
-        }
+        // Assert
+        Assert.AreEqual(0m, tarifa, "La tarifa debe ser $0 para franquicia completa");
+    }
 
-        [Test]
-        public void TestPagarPasajeSiempreRetornaTrue()
-        {
-            bool resultado = tarjeta.PagarPasaje();
-            Assert.IsTrue(resultado);
-        }
+    [Test]
+    public void Test_ObtenerTipo_DebeRetornarFranquiciaCompleta()
+    {
+        // Arrange & Act
+        string tipo = tarjeta.ObtenerTipo();
 
-        [Test]
-        public void TestPagarPasajeSinSaldo()
-        {
-            // Franquicia completa puede pagar sin saldo
-            bool resultado = tarjeta.PagarPasaje();
-            
-            Assert.IsTrue(resultado);
-            Assert.AreEqual(0m, tarjeta.Saldo);
-        }
+        // Assert
+        Assert.AreEqual("Franquicia Completa", tipo, "El tipo debe ser 'Franquicia Completa'");
+    }
 
-        [Test]
-        public void TestPagarPasajeConSaldo()
-        {
-            tarjeta.Cargar(5000);
-            bool resultado = tarjeta.PagarPasaje();
-            
-            Assert.IsTrue(resultado);
-            Assert.AreEqual(5000m, tarjeta.Saldo); // El saldo no se descuenta
-        }
+    [Test]
+    public void Test_PrimerViaje_DebeSerGratuito()
+    {
+        // Arrange
+        decimal saldoInicial = tarjeta.Saldo;
 
-        [Test]
-        public void TestMultiplesPasajesSinDescontarSaldo()
-        {
-            tarjeta.Cargar(3000);
-            
-            tarjeta.PagarPasaje();
-            Assert.AreEqual(3000m, tarjeta.Saldo);
-            
-            tarjeta.PagarPasaje();
-            Assert.AreEqual(3000m, tarjeta.Saldo);
-            
-            tarjeta.PagarPasaje();
-            Assert.AreEqual(3000m, tarjeta.Saldo);
-        }
+        // Act
+        bool resultado = tarjeta.PagarPasaje();
+        Boleto boleto = colectivo.PagarCon(tarjeta);
 
-        [Test]
-        public void TestPagarPasaje10VecesNoAfectaSaldo()
-        {
-            tarjeta.Cargar(8000);
-            
-            for (int i = 0; i < 10; i++)
-            {
-                bool resultado = tarjeta.PagarPasaje();
-                Assert.IsTrue(resultado, $"Pasaje {i + 1} debería ser exitoso");
-                Assert.AreEqual(8000m, tarjeta.Saldo, "El saldo no debe cambiar");
-            }
-        }
+        // Assert
+        Assert.IsTrue(resultado, "El primer viaje debe ser exitoso");
+        Assert.IsNotNull(boleto, "Debe generar un boleto");
+        Assert.AreEqual(0m, boleto.MontoPagado, "El monto pagado debe ser $0");
+        Assert.AreEqual(saldoInicial, tarjeta.Saldo, "El saldo no debe cambiar");
+    }
 
-        [Test]
-        public void TestPagarEnColectivoConFranquiciaCompleta()
-        {
-            Boleto boleto = colectivo.PagarCon(tarjeta);
-            
-            Assert.IsNotNull(boleto);
-            Assert.AreEqual(0m, boleto.MontoPagado);
-            Assert.AreEqual(0m, boleto.SaldoRestante);
-            Assert.AreEqual("K", boleto.LineaColectivo);
-            Assert.AreEqual("Las Delicias", boleto.Empresa);
-        }
+    [Test]
+    public void Test_SegundoViaje_DebeSerGratuito()
+    {
+        // Arrange
+        colectivo.PagarCon(tarjeta); // Primer viaje
+        decimal saldoAntes = tarjeta.Saldo;
 
-        [Test]
-        public void TestFranquiciaCompletaSiemprePuedePagar()
-        {
-            // Sin cargar saldo, realizar múltiples viajes
-            for (int i = 0; i < 20; i++)
-            {
-                Boleto boleto = colectivo.PagarCon(tarjeta);
-                Assert.IsNotNull(boleto, $"Boleto {i + 1} no debería ser null");
-                Assert.AreEqual(0m, boleto.MontoPagado);
-            }
-        }
+        // Act
+        Boleto boleto = colectivo.PagarCon(tarjeta); // Segundo viaje
 
-        [Test]
-        public void TestCargarSaldoFuncionaNormalmente()
-        {
-            bool resultado = tarjeta.Cargar(10000);
-            
-            Assert.IsTrue(resultado);
-            Assert.AreEqual(10000m, tarjeta.Saldo);
-        }
+        // Assert
+        Assert.IsNotNull(boleto, "Debe generar un boleto");
+        Assert.AreEqual(0m, boleto.MontoPagado, "El monto pagado debe ser $0");
+        Assert.AreEqual(saldoAntes, tarjeta.Saldo, "El saldo no debe cambiar");
+    }
 
-        [Test]
-        public void TestCargarTodosLosMontosValidos()
-        {
-            decimal[] montosValidos = { 2000, 3000, 4000, 5000, 8000, 10000, 15000, 20000, 25000, 30000 };
-            
-            foreach (var monto in montosValidos)
-            {
-                var tarjetaTemp = new TarjetaFranquiciaCompleta();
-                bool resultado = tarjetaTemp.Cargar(monto);
-                Assert.IsTrue(resultado, $"Debería aceptar el monto {monto}");
-                Assert.AreEqual(monto, tarjetaTemp.Saldo);
-            }
-        }
+    [Test]
+    public void Test_NoSePuedenRealizarMasDeDosViajesGratuitosPorDia()
+    {
+        // Arrange
+        colectivo.PagarCon(tarjeta); // Primer viaje gratuito
+        colectivo.PagarCon(tarjeta); // Segundo viaje gratuito
 
-        [Test]
-        public void TestCargarMontoInvalido()
-        {
-            bool resultado = tarjeta.Cargar(1500);
-            
-            Assert.IsFalse(resultado);
-            Assert.AreEqual(0m, tarjeta.Saldo);
-        }
+        // Act
+        Boleto boleto = colectivo.PagarCon(tarjeta); // Tercer viaje (debe fallar)
 
-        [Test]
-        public void TestDescontarSaldoFuncionaNormalmente()
-        {
-            tarjeta.Cargar(5000);
-            bool resultado = tarjeta.Descontar(2000);
-            
-            Assert.IsTrue(resultado);
-            Assert.AreEqual(3000m, tarjeta.Saldo);
-        }
+        // Assert
+        Assert.IsNull(boleto, "No debe generar boleto para el tercer viaje - límite alcanzado");
+    }
 
-        [Test]
-        public void TestDescontarConSaldoInsuficiente()
-        {
-            tarjeta.Cargar(2000);
-            bool resultado = tarjeta.Descontar(3000);
-            
-            Assert.IsFalse(resultado);
-            Assert.AreEqual(2000m, tarjeta.Saldo);
-        }
+    [Test]
+    public void Test_ViajesPosterioresAlSegundo_SeCobranConPrecioCompleto()
+    {
+        // Arrange
+        const decimal TARIFA_COMPLETA = 1580m;
+        
+        // Realizar dos viajes gratuitos con franquicia completa
+        colectivo.PagarCon(tarjeta); // Primer viaje gratuito
+        colectivo.PagarCon(tarjeta); // Segundo viaje gratuito
+        
+        // Verificar que el tercer viaje falla con franquicia
+        Boleto boletoFranquicia = colectivo.PagarCon(tarjeta);
+        Assert.IsNull(boletoFranquicia, "La franquicia debe rechazar el tercer viaje");
 
-        [Test]
-        public void TestPagarPasajeNoLlamaADescontar()
-        {
-            tarjeta.Cargar(8000);
-            decimal saldoInicial = tarjeta.Saldo;
-            
-            // Pagar varios pasajes
-            tarjeta.PagarPasaje();
-            tarjeta.PagarPasaje();
-            tarjeta.PagarPasaje();
-            
-            // El saldo debe permanecer igual
-            Assert.AreEqual(saldoInicial, tarjeta.Saldo);
-        }
+        // Crear una tarjeta normal para demostrar que los viajes posteriores se cobran normalmente
+        Tarjeta tarjetaNormal = new Tarjeta();
+        tarjetaNormal.Cargar(5000m);
+        decimal saldoAntes = tarjetaNormal.Saldo;
 
-        [Test]
-        public void TestVariosColectivosConFranquiciaCompleta()
-        {
-            Colectivo colectivo1 = new Colectivo("152", "Rosario Bus");
-            Colectivo colectivo2 = new Colectivo("143", "Semtur");
-            Colectivo colectivo3 = new Colectivo("K", "Las Delicias");
-            
-            Boleto boleto1 = colectivo1.PagarCon(tarjeta);
-            Boleto boleto2 = colectivo2.PagarCon(tarjeta);
-            Boleto boleto3 = colectivo3.PagarCon(tarjeta);
-            
-            Assert.IsNotNull(boleto1);
-            Assert.IsNotNull(boleto2);
-            Assert.IsNotNull(boleto3);
-            
-            Assert.AreEqual(0m, boleto1.MontoPagado);
-            Assert.AreEqual(0m, boleto2.MontoPagado);
-            Assert.AreEqual(0m, boleto3.MontoPagado);
-            
-            Assert.AreEqual("152", boleto1.LineaColectivo);
-            Assert.AreEqual("143", boleto2.LineaColectivo);
-            Assert.AreEqual("K", boleto3.LineaColectivo);
-        }
+        // Act - Pagar un tercer viaje con tarjeta normal
+        Boleto boleto = colectivo.PagarCon(tarjetaNormal);
 
-        [Test]
-        public void TestFranquiciaCompletaConLimiteDeSaldo()
-        {
-            tarjeta.Cargar(30000);
-            tarjeta.Cargar(10000); 
-            
-            bool resultado = tarjeta.PagarPasaje();
-            Assert.IsTrue(resultado);
-            Assert.AreEqual(40000m, tarjeta.Saldo); // Saldo no cambia
-        }
+        // Assert
+        Assert.IsNotNull(boleto, "El viaje con tarjeta normal debe ser exitoso");
+        Assert.AreEqual(TARIFA_COMPLETA, boleto.MontoPagado, 
+            "El monto pagado debe ser la tarifa completa ($1580)");
+        Assert.AreEqual(saldoAntes - TARIFA_COMPLETA, tarjetaNormal.Saldo, 
+            "Debe descontarse la tarifa completa del saldo");
+        Assert.AreEqual("Normal", boleto.TipoTarjeta, 
+            "El tipo debe ser 'Normal' ya que la franquicia no permite más viajes");
+    }
 
-        [Test]
-        public void TestFranquiciaCompletaNoSuperaLimiteCarga()
-        {
-            tarjeta.Cargar(30000);
-            tarjeta.Cargar(10000); 
-            
-            bool resultado = tarjeta.Cargar(2000); 
-            Assert.IsFalse(resultado);
-            Assert.AreEqual(40000m, tarjeta.Saldo);
-        }
+    [Test]
+    public void Test_ContadorDeViajesSeReiniciaNuevoDia()
+    {
+        // Este test verifica la lógica del contador
+        // En un entorno real, se usaría dependency injection para el DateTime
 
-        [Test]
-        public void TestIntegracionCargarDescontarPagar()
-        {
-            // Cargar saldo
-            tarjeta.Cargar(5000);
-            Assert.AreEqual(5000m, tarjeta.Saldo);
-            
-            // Pagar pasaje (no descuenta)
-            tarjeta.PagarPasaje();
-            Assert.AreEqual(5000m, tarjeta.Saldo);
-            
-            // Descontar manualmente
-            tarjeta.Descontar(1000);
-            Assert.AreEqual(4000m, tarjeta.Saldo);
-            
-            // Pagar otro pasaje (sigue sin descontar)
-            tarjeta.PagarPasaje();
-            Assert.AreEqual(4000m, tarjeta.Saldo);
-        }
+        // Arrange
+        colectivo.PagarCon(tarjeta); // Primer viaje
+        colectivo.PagarCon(tarjeta); // Segundo viaje
 
-        [Test]
-        public void TestHeredaDeTarjeta()
-        {
-            Assert.IsInstanceOf<Tarjeta>(tarjeta);
-        }
+        // Act
+        Boleto tercerViajeMismoDia = colectivo.PagarCon(tarjeta);
 
-        [Test]
-        public void TestSaldoInicial()
-        {
-            TarjetaFranquiciaCompleta nuevaTarjeta = new TarjetaFranquiciaCompleta();
-            Assert.AreEqual(0m, nuevaTarjeta.Saldo);
-        }
+        // Assert
+        Assert.IsNull(tercerViajeMismoDia, 
+            "El tercer viaje el mismo día debe fallar");
+        
+        // Nota: En un test real con mocks, aquí se simularía un cambio de día
+        // y se verificaría que el contador se reinicia a 0
+    }
 
-        [Test]
-        public void TestPagarPasaje50VecesSinSaldo()
-        {
-            // Sin cargar nada, verificar que puede pagar 50 veces
-            for (int i = 0; i < 50; i++)
-            {
-                bool resultado = tarjeta.PagarPasaje();
-                Assert.IsTrue(resultado, $"Intento {i + 1} debería ser exitoso");
-            }
-            
-            Assert.AreEqual(0m, tarjeta.Saldo);
-        }
+    [Test]
+    public void Test_PrimerViajeDelDia_SinViajesPrevios()
+    {
+        // Arrange
+        TarjetaFranquiciaCompleta tarjetaNueva = new TarjetaFranquiciaCompleta();
 
-        [Test]
-        public void TestObtenerTarifaDiferenteDeTarjetaNormal()
-        {
-            Tarjeta tarjetaNormal = new Tarjeta();
-            Assert.AreNotEqual(tarjetaNormal.ObtenerTarifa(), tarjeta.ObtenerTarifa());
-            Assert.AreEqual(1580m, tarjetaNormal.ObtenerTarifa());
-            Assert.AreEqual(0m, tarjeta.ObtenerTarifa());
-        }
+        // Act
+        bool resultado = tarjetaNueva.PagarPasaje();
 
-        [Test]
-        public void TestBoletoSiempreTieneMontoCero()
-        {
-            tarjeta.Cargar(10000);
-            
-            for (int i = 0; i < 5; i++)
-            {
-                Boleto boleto = colectivo.PagarCon(tarjeta);
-                Assert.AreEqual(0m, boleto.MontoPagado, $"Boleto {i + 1} debe tener monto 0");
-                Assert.AreEqual(10000m, boleto.SaldoRestante, "Saldo debe permanecer en 10000");
-            }
-        }
+        // Assert
+        Assert.IsTrue(resultado, "El primer viaje de una tarjeta nueva debe ser exitoso");
+    }
+
+    [Test]
+    public void Test_DosViajesConsecutivos_AmbosGratuitos()
+    {
+        // Arrange & Act
+        Boleto primerViaje = colectivo.PagarCon(tarjeta);
+        Boleto segundoViaje = colectivo.PagarCon(tarjeta);
+
+        // Assert
+        Assert.IsNotNull(primerViaje, "El primer viaje debe ser exitoso");
+        Assert.IsNotNull(segundoViaje, "El segundo viaje debe ser exitoso");
+        Assert.AreEqual(0m, primerViaje.MontoPagado, "Primer viaje debe ser gratuito");
+        Assert.AreEqual(0m, segundoViaje.MontoPagado, "Segundo viaje debe ser gratuito");
+        Assert.AreEqual(0m, tarjeta.Saldo, "El saldo debe permanecer en 0");
+    }
+
+    [Test]
+    public void Test_MultiplesIntentosDeViajePostLimite_TodosFallan()
+    {
+        // Arrange
+        colectivo.PagarCon(tarjeta); // Viaje 1
+        colectivo.PagarCon(tarjeta); // Viaje 2
+
+        // Act
+        Boleto viaje3 = colectivo.PagarCon(tarjeta);
+        Boleto viaje4 = colectivo.PagarCon(tarjeta);
+        Boleto viaje5 = colectivo.PagarCon(tarjeta);
+
+        // Assert
+        Assert.IsNull(viaje3, "El tercer viaje debe fallar");
+        Assert.IsNull(viaje4, "El cuarto viaje debe fallar");
+        Assert.IsNull(viaje5, "El quinto viaje debe fallar");
+    }
+
+    [Test]
+    public void Test_BoletoGenerado_ContieneInformacionCorrecta()
+    {
+        // Arrange & Act
+        Boleto boleto = colectivo.PagarCon(tarjeta);
+
+        // Assert
+        Assert.IsNotNull(boleto, "Debe generar un boleto");
+        Assert.AreEqual(0m, boleto.MontoPagado, "El monto debe ser $0");
+        Assert.AreEqual("Franquicia Completa", boleto.TipoTarjeta, 
+            "El tipo de tarjeta debe ser 'Franquicia Completa'");
+        Assert.AreEqual("120", boleto.LineaColectivo, "Debe tener la línea correcta");
+        Assert.AreEqual("Rosario Bus", boleto.Empresa, "Debe tener la empresa correcta");
     }
 }

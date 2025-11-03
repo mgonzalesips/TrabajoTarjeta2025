@@ -20,7 +20,7 @@
         {
             if (tarjeta.PagarPasaje())
             {
-                return new Boleto(tarifaAPagar, linea, empresa, tarjeta.Saldo);
+                return new Boleto(tarifaAPagar, linea, empresa, tarjeta.Saldo, tarjeta.ObtenerTipo(), tarjeta.Id);
             }
             return null;
         }
@@ -30,7 +30,7 @@
 
         if (tarjeta.PagarPasaje())
         {
-            return new Boleto(tarifaAPagar, linea, empresa, tarjeta.Saldo);
+            return new Boleto(tarifaAPagar, linea, empresa, tarjeta.Saldo, tarjeta.ObtenerTipo(), tarjeta.Id);
         }
 
         return null;
