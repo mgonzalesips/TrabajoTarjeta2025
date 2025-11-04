@@ -1,4 +1,4 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using TarjetaSube;
 
 namespace TarjetaSubeTest
@@ -78,13 +78,12 @@ namespace TarjetaSubeTest
         {
             Tarjeta tarjeta = new Tarjeta();
             tarjeta.Cargar(30000);
-            tarjeta.Cargar(10000);
-            Assert.AreEqual(40000, tarjeta.ObtenerSaldo());
+            tarjeta.Cargar(30000); 
 
-            bool resultado = tarjeta.Cargar(2000);
-            Assert.IsFalse(resultado);
-            Assert.AreEqual(40000, tarjeta.ObtenerSaldo());
+            Assert.AreEqual(56000, tarjeta.ObtenerSaldo());
+            Assert.Greater(tarjeta.SaldoPendiente, 0); 
         }
+
 
         [Test]
         public void TestDescontarConSaldoSuficiente()
@@ -210,5 +209,74 @@ namespace TarjetaSubeTest
 
             Assert.AreNotEqual(tarjeta1.Id, tarjeta2.Id);
         }
+
+        [Test]
+        public void TestCargaConExcesoGeneraSaldoPendiente()
+        {
+            Tarjeta tarjeta = new Tarjeta();
+            tarjeta.Cargar(30000);
+            tarjeta.Cargar(30000);
+            Assert.AreEqual(56000, tarjeta.ObtenerSaldo());
+            Assert.Greater(tarjeta.SaldoPendiente, 0);
+        }
+
+        [Test]
+        public void TestAcreditarCargaCuandoSeDescuenta()
+        {
+            Tarjeta tarjeta = new Tarjeta();
+            tarjeta.Cargar(30000);
+            tarjeta.Cargar(30000);
+            int saldoPendienteInicial = tarjeta.SaldoPendiente;
+
+            tarjeta.Descontar(1580);
+
+            Assert.Less(tarjeta.SaldoPendiente, saldoPendienteInicial);
+            Assert.LessOrEqual(tarjeta.ObtenerSaldo(), 56000);
+        }
+
+        [Test]
+        public void TestAcreditarCargaVariasVecesHastaLimite()
+        {
+            Tarjeta tarjeta = new Tarjeta();
+            tarjeta.Cargar(30000);
+            tarjeta.Cargar(30000);
+
+            for (int i = 0; i < 10; i++)
+                tarjeta.Descontar(1580);
+
+            Assert.LessOrEqual(tarjeta.SaldoPendiente, 0);
+            Assert.LessOrEqual(tarjeta.ObtenerSaldo(), 56000);
+        }
+
+
+        [Test]
+        public void TestCargaQueSuperaElMaximoDejaSaldoPendiente()
+        {
+            Tarjeta tarjeta = new Tarjeta();
+
+            tarjeta.Cargar(30000);
+            tarjeta.Cargar(30000); 
+
+            Assert.AreEqual(56000, tarjeta.ObtenerSaldo());
+
+            tarjeta.Descontar(2000);
+            tarjeta.AcreditarCarga();
+
+            Assert.AreEqual(56000, tarjeta.ObtenerSaldo());
+        }
+
+        [Test]
+        public void TestSaldoPendienteSeAcreditaDespuesDeUnViaje()
+        {
+            Tarjeta tarjeta = new Tarjeta();
+
+            tarjeta.Cargar(30000);
+            tarjeta.Cargar(30000); 
+
+            tarjeta.Descontar(2000); 
+
+            Assert.AreEqual(56000, tarjeta.ObtenerSaldo()); 
+        }
     }
+
 }
