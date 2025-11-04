@@ -124,23 +124,33 @@ namespace TarjetaSubeTest
         }
 
         [Test]
-        public void TestPagarTarifa()
+        public void TestPagarTarifaConColectivo()
         {
+            TiempoFalso tiempo = new TiempoFalso();
             Tarjeta tarjeta = new Tarjeta();
+            Colectivo colectivo = new Colectivo("152", tiempo);
+            
             tarjeta.Cargar(2000);
-            bool resultado = tarjeta.Pagar();
-            Assert.IsTrue(resultado);
+            Boleto boleto = colectivo.PagarCon(tarjeta);
+            
+            Assert.IsNotNull(boleto);
+            Assert.AreEqual(1580, boleto.TotalAbonado); 
             Assert.AreEqual(420, tarjeta.ObtenerSaldo());
         }
 
         [Test]
         public void TestMedioBoletoDescuentaMitad()
         {
+            TiempoFalso tiempo = new TiempoFalso();
             MedioBoleto tarjeta = new MedioBoleto();
+            Colectivo colectivo = new Colectivo("152", tiempo);
+            
             tarjeta.Cargar(2000);
-            bool resultado = tarjeta.Pagar();
-            Assert.IsTrue(resultado);
-            Assert.AreEqual(2000 - 1580 / 2, tarjeta.ObtenerSaldo());
+            Boleto boleto = colectivo.PagarCon(tarjeta);
+            
+            Assert.IsNotNull(boleto);
+            Assert.AreEqual(790, boleto.TotalAbonado);
+            Assert.AreEqual(2000 - 790, tarjeta.ObtenerSaldo());
         }
 
         [Test]
@@ -194,10 +204,15 @@ namespace TarjetaSubeTest
         [Test]
         public void TestFranquiciaCompletaSiemprePuedePagar()
         {
+            TiempoFalso tiempo = new TiempoFalso();
             FranquiciaCompleta tarjeta = new FranquiciaCompleta();
+            Colectivo colectivo = new Colectivo("152", tiempo);
+            
             tarjeta.Cargar(0);
-            bool resultado = tarjeta.Pagar();
-            Assert.IsTrue(resultado);
+            Boleto boleto = colectivo.PagarCon(tarjeta);
+            
+            Assert.IsNotNull(boleto);
+            Assert.AreEqual(0, boleto.TotalAbonado); 
             Assert.AreEqual(0, tarjeta.ObtenerSaldo());
         }
 
@@ -276,6 +291,110 @@ namespace TarjetaSubeTest
             tarjeta.Descontar(2000); 
 
             Assert.AreEqual(56000, tarjeta.ObtenerSaldo()); 
+        }
+
+        [Test]
+        public void TestBoletoUsoFrecuente_NoDescuentoHasta29()
+        {
+            TiempoFalso tiempo = new TiempoFalso();
+            Tarjeta tarjeta = new Tarjeta();
+            Colectivo colectivo = new Colectivo("152", tiempo);
+
+            for (int i = 0; i < 28; i++)
+                tarjeta.RegistrarViaje(tiempo);
+
+            tarjeta.Cargar(30000);
+            tarjeta.Cargar(30000); 
+
+            Boleto boleto = colectivo.PagarCon(tarjeta);
+            Assert.IsNotNull(boleto);
+            Assert.AreEqual(1580, boleto.TotalAbonado); 
+        }
+
+        [Test]
+        public void TestBoletoUsoFrecuente_30avoViaje_20PorCiento()
+        {
+            TiempoFalso tiempo = new TiempoFalso();
+            Tarjeta tarjeta = new Tarjeta();
+            Colectivo colectivo = new Colectivo("152", tiempo);
+
+            for (int i = 0; i < 29; i++)
+                tarjeta.RegistrarViaje(tiempo);
+
+            tarjeta.Cargar(30000);
+            tarjeta.Cargar(30000);
+
+            Boleto boleto = colectivo.PagarCon(tarjeta);
+            Assert.IsNotNull(boleto);
+            Assert.AreEqual(1264, boleto.TotalAbonado); 
+        }
+
+        [Test]
+        public void TestBoletoUsoFrecuente_60avoViaje_25PorCiento()
+        {
+            TiempoFalso tiempo = new TiempoFalso();
+            Tarjeta tarjeta = new Tarjeta();
+            Colectivo colectivo = new Colectivo("152", tiempo);
+
+            for (int i = 0; i < 59; i++)
+                tarjeta.RegistrarViaje(tiempo);
+
+            tarjeta.Cargar(30000);
+            tarjeta.Cargar(30000);
+
+            Boleto boleto = colectivo.PagarCon(tarjeta);
+            Assert.IsNotNull(boleto);
+            Assert.AreEqual(1185, boleto.TotalAbonado); 
+        }
+
+        [Test]
+        public void TestBoletoUsoFrecuente_81EnAdelante_NoDescuento()
+        {
+            TiempoFalso tiempo = new TiempoFalso();
+            Tarjeta tarjeta = new Tarjeta();
+            Colectivo colectivo = new Colectivo("152", tiempo);
+
+            for (int i = 0; i < 80; i++)
+                tarjeta.RegistrarViaje(tiempo);
+
+            tarjeta.Cargar(30000);
+            tarjeta.Cargar(30000);
+
+            Boleto boleto = colectivo.PagarCon(tarjeta);
+            Assert.IsNotNull(boleto);
+            Assert.AreEqual(1580, boleto.TotalAbonado); 
+        }
+
+        [Test]
+        public void TestBoletoUsoFrecuente_SeReiniciaAlCambiarDeMes()
+        {
+            TiempoFalso tiempo = new TiempoFalso(); 
+            Tarjeta tarjeta = new Tarjeta();
+            Colectivo colectivo = new Colectivo("152", tiempo);
+
+            for (int i = 0; i < 30; i++)
+                tarjeta.RegistrarViaje(tiempo);
+
+            tiempo.AgregarDias(20);
+
+            tarjeta.Cargar(30000);
+            tarjeta.Cargar(30000);
+
+            Boleto boleto = colectivo.PagarCon(tarjeta);
+            Assert.IsNotNull(boleto);
+            Assert.AreEqual(1580, boleto.TotalAbonado); 
+        }
+
+        [Test]
+        public void TestObtenerCantidadViajesMes_ReflejaLosRegistros()
+        {
+            TiempoFalso tiempo = new TiempoFalso();
+            Tarjeta tarjeta = new Tarjeta();
+
+            for (int i = 0; i < 15; i++)
+                tarjeta.RegistrarViaje(tiempo);
+
+            Assert.AreEqual(15, tarjeta.ObtenerCantidadViajesMes());
         }
     }
 

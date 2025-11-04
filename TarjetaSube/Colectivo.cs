@@ -32,22 +32,28 @@ namespace TarjetaSube
 
             int saldoAnterior = tarjeta.ObtenerSaldo();
             bool pagoExitoso;
+            int tarifaAplicada = 0;
 
             if (tarjeta is MedioBoleto medioBoleto)
             {
+                // primero aplicar la lógica de descuento/validación, luego obtener la tarifa actual
                 pagoExitoso = medioBoleto.DescontarSegunViajes();
+                tarifaAplicada = medioBoleto.ObtenerTarifaActual();
             }
             else if (tarjeta is BoletoGratuito boletoGratuito)
             {
                 pagoExitoso = boletoGratuito.DescontarSegunViajes(tiempo);
+                tarifaAplicada = boletoGratuito.ObtenerTarifaActual();
             }
             else if (tarjeta is FranquiciaCompleta franquiciaCompleta)
             {
                 pagoExitoso = franquiciaCompleta.DescontarSegunViajes(tiempo);
+                tarifaAplicada = franquiciaCompleta.ObtenerTarifaActual();
             }
             else
             {
-                pagoExitoso = tarjeta.Descontar(TARIFA_BASICA);
+                tarifaAplicada = tarjeta.CalcularTarifaConDescuento(TARIFA_BASICA, tiempo);
+                pagoExitoso = tarjeta.Descontar(tarifaAplicada);
             }
 
             if (!pagoExitoso)
@@ -57,20 +63,13 @@ namespace TarjetaSube
 
             int saldoNuevo = tarjeta.ObtenerSaldo();
 
-            int totalAbonado = saldoAnterior - saldoNuevo;
+            // usar la tarifa aplicada como total abonado
+            int totalAbonado = tarifaAplicada;
 
+            // registrar el viaje (incrementa contadores diarios/mensuales)
             tarjeta.RegistrarViaje(tiempo);
 
-            Boleto boleto = new Boleto(
-                tipoTarjeta: tarjeta.GetType().Name,
-                lineaColectivo: Linea,
-                totalAbonado: totalAbonado,
-                saldoRestante: saldoNuevo,
-                idTarjeta: tarjeta.Id,
-                tiempo: tiempo
-            );
-
-            return boleto;
+            return new Boleto(tarjeta.GetType().Name, Linea, totalAbonado, saldoNuevo, tarjeta.Id, tiempo);
         }
     }
 }
