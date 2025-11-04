@@ -5,16 +5,27 @@ namespace TarjetaSube
     public class Colectivo
     {
         private const int TARIFA_BASICA = 1580;
+        private const int TARIFA_INTERURBANA = 3000;
         public string Linea { get; private set; }
         private Tiempo tiempo;
+        private bool esInterurbano;
 
-        public Colectivo(string linea) : this(linea, new Tiempo())
+        public Colectivo(string linea) : this(linea, false, new Tiempo())
         {
         }
 
-        public Colectivo(string linea, Tiempo tiempo)
+        public Colectivo(string linea, Tiempo tiempo) : this(linea, false, tiempo)
+        {
+        }
+
+        public Colectivo(string linea, bool esInterurbano) : this(linea, esInterurbano, new Tiempo())
+        {
+        }
+
+        public Colectivo(string linea, bool esInterurbano, Tiempo tiempo)
         {
             Linea = linea;
+            this.esInterurbano = esInterurbano;
             this.tiempo = tiempo;
         }
 
@@ -30,29 +41,30 @@ namespace TarjetaSube
                 return null;
             }
 
+            int tarifaBase = esInterurbano ? TARIFA_INTERURBANA : TARIFA_BASICA;
+
             int saldoAnterior = tarjeta.ObtenerSaldo();
             bool pagoExitoso;
             int tarifaAplicada = 0;
 
             if (tarjeta is MedioBoleto medioBoleto)
             {
-                // primero aplicar la lógica de descuento/validación, luego obtener la tarifa actual
-                pagoExitoso = medioBoleto.DescontarSegunViajes();
-                tarifaAplicada = medioBoleto.ObtenerTarifaActual();
+                pagoExitoso = medioBoleto.DescontarSegunViajes(tarifaBase);
+                tarifaAplicada = medioBoleto.ObtenerTarifaActual(tarifaBase);
             }
             else if (tarjeta is BoletoGratuito boletoGratuito)
             {
-                pagoExitoso = boletoGratuito.DescontarSegunViajes(tiempo);
-                tarifaAplicada = boletoGratuito.ObtenerTarifaActual();
+                pagoExitoso = boletoGratuito.DescontarSegunViajes(tarifaBase, tiempo);
+                tarifaAplicada = boletoGratuito.ObtenerTarifaActual(tarifaBase);
             }
             else if (tarjeta is FranquiciaCompleta franquiciaCompleta)
             {
-                pagoExitoso = franquiciaCompleta.DescontarSegunViajes(tiempo);
-                tarifaAplicada = franquiciaCompleta.ObtenerTarifaActual();
+                pagoExitoso = franquiciaCompleta.DescontarSegunViajes(tarifaBase, tiempo);
+                tarifaAplicada = franquiciaCompleta.ObtenerTarifaActual(tarifaBase);
             }
             else
             {
-                tarifaAplicada = tarjeta.CalcularTarifaConDescuento(TARIFA_BASICA, tiempo);
+                tarifaAplicada = tarjeta.CalcularTarifaConDescuento(tarifaBase, tiempo);
                 pagoExitoso = tarjeta.Descontar(tarifaAplicada);
             }
 
@@ -63,10 +75,8 @@ namespace TarjetaSube
 
             int saldoNuevo = tarjeta.ObtenerSaldo();
 
-            // usar la tarifa aplicada como total abonado
             int totalAbonado = tarifaAplicada;
 
-            // registrar el viaje (incrementa contadores diarios/mensuales)
             tarjeta.RegistrarViaje(tiempo);
 
             return new Boleto(tarjeta.GetType().Name, Linea, totalAbonado, saldoNuevo, tarjeta.Id, tiempo);

@@ -63,6 +63,7 @@ namespace TarjetaSubeTest
         public void TestPagarConMedioBoleto()
         {
             TiempoFalso tiempoFalso = new TiempoFalso();
+            tiempoFalso.AgregarMinutos(360);
             Colectivo colectivo = new Colectivo("200", tiempoFalso);
             MedioBoleto tarjeta = new MedioBoleto();
             tarjeta.Cargar(2000);
@@ -79,6 +80,7 @@ namespace TarjetaSubeTest
         public void TestMedioBoletoNoPuedeViajarAntesDe5Minutos()
         {
             TiempoFalso tiempoFalso = new TiempoFalso();
+            tiempoFalso.AgregarMinutos(360); 
             Colectivo colectivo = new Colectivo("200", tiempoFalso);
             MedioBoleto tarjeta = new MedioBoleto();
             tarjeta.Cargar(5000);
@@ -104,6 +106,7 @@ namespace TarjetaSubeTest
         public void TestMedioBoletoNoPermiteMasDeDosViajesPorDia()
         {
             TiempoFalso tiempoFalso = new TiempoFalso();
+            tiempoFalso.AgregarMinutos(360); 
             Colectivo colectivo = new Colectivo("200", tiempoFalso);
             MedioBoleto tarjeta = new MedioBoleto();
             tarjeta.Cargar(10000);
@@ -135,6 +138,7 @@ namespace TarjetaSubeTest
         public void TestMedioBoletoReiniciaContadorAlDiaSiguiente()
         {
             TiempoFalso tiempoFalso = new TiempoFalso();
+            tiempoFalso.AgregarMinutos(360); 
             Colectivo colectivo = new Colectivo("200", tiempoFalso);
             MedioBoleto tarjeta = new MedioBoleto();
             tarjeta.Cargar(10000);
@@ -161,6 +165,7 @@ namespace TarjetaSubeTest
         public void TestPagarConBoletoGratuito()
         {
             TiempoFalso tiempoFalso = new TiempoFalso();
+            tiempoFalso.AgregarMinutos(360); 
             Colectivo colectivo = new Colectivo("201", tiempoFalso);
             BoletoGratuito tarjeta = new BoletoGratuito();
 
@@ -176,6 +181,7 @@ namespace TarjetaSubeTest
         public void TestBoletoGratuitoNoPermiteMasDeDosViajesGratuitos()
         {
             TiempoFalso tiempoFalso = new TiempoFalso();
+            tiempoFalso.AgregarMinutos(360);
             Colectivo colectivo = new Colectivo("201", tiempoFalso);
             BoletoGratuito tarjeta = new BoletoGratuito();
             tarjeta.Cargar(5000);
@@ -200,6 +206,7 @@ namespace TarjetaSubeTest
         public void TestBoletoGratuitoViajesPosterioresAlSegundoSeCobran()
         {
             TiempoFalso tiempoFalso = new TiempoFalso();
+            tiempoFalso.AgregarMinutos(360); 
             Colectivo colectivo = new Colectivo("201", tiempoFalso);
             BoletoGratuito tarjeta = new BoletoGratuito();
             tarjeta.Cargar(10000);
@@ -227,6 +234,7 @@ namespace TarjetaSubeTest
         public void TestBoletoGratuitoReiniciaContadorAlDiaSiguiente()
         {
             TiempoFalso tiempoFalso = new TiempoFalso();
+            tiempoFalso.AgregarMinutos(360); 
             Colectivo colectivo = new Colectivo("201", tiempoFalso);
             BoletoGratuito tarjeta = new BoletoGratuito();
             tarjeta.Cargar(10000);
@@ -253,6 +261,7 @@ namespace TarjetaSubeTest
         public void TestBoletoGratuitoSinSaldoNoPermiteTercerViaje()
         {
             TiempoFalso tiempoFalso = new TiempoFalso();
+            tiempoFalso.AgregarMinutos(360); 
             Colectivo colectivo = new Colectivo("201", tiempoFalso);
             BoletoGratuito tarjeta = new BoletoGratuito();
 
@@ -286,6 +295,7 @@ namespace TarjetaSubeTest
         public void TestTipoTarjetaRegistradoEnBoleto()
         {
             TiempoFalso tiempoFalso = new TiempoFalso();
+            tiempoFalso.AgregarMinutos(360); 
             Colectivo colectivo = new Colectivo("203", tiempoFalso);
             MedioBoleto tarjeta = new MedioBoleto();
             tarjeta.Cargar(2000);
@@ -312,6 +322,53 @@ namespace TarjetaSubeTest
             Assert.AreEqual(3420, boleto.SaldoRestante);
             Assert.AreEqual(tarjeta.Id, boleto.IdTarjeta);
             Assert.IsNotNull(boleto.Fecha);
+        }
+
+        [Test]
+        public void TestFranquiciaNoPermiteFueraDeFranjaHorario()
+        {
+            TiempoFalso tiempoFalso = new TiempoFalso();
+
+            tiempoFalso.AgregarDias(5);
+            tiempoFalso.AgregarMinutos(600);
+            Colectivo colectivo = new Colectivo("300", tiempoFalso);
+            FranquiciaCompleta tarjeta = new FranquiciaCompleta();
+
+            Boleto boleto = colectivo.PagarCon(tarjeta);
+
+            Assert.IsNull(boleto);
+        }
+
+        [Test]
+        public void TestLineaInterurbanaTarifaNormal()
+        {
+            TiempoFalso tiempoFalso = new TiempoFalso();
+            tiempoFalso.AgregarMinutos(360); 
+            Colectivo colectivo = new Colectivo("300", true, tiempoFalso);
+            Tarjeta tarjeta = new Tarjeta();
+            tarjeta.Cargar(5000);
+
+            Boleto boleto = colectivo.PagarCon(tarjeta);
+
+            Assert.IsNotNull(boleto);
+            Assert.AreEqual(3000, boleto.TotalAbonado);
+            Assert.AreEqual(2000, boleto.SaldoRestante);
+        }
+
+        [Test]
+        public void TestLineaInterurbanaMedioBoleto()
+        {
+            TiempoFalso tiempoFalso = new TiempoFalso();
+            tiempoFalso.AgregarMinutos(360); 
+            Colectivo colectivo = new Colectivo("301", true, tiempoFalso);
+            MedioBoleto tarjeta = new MedioBoleto();
+            tarjeta.Cargar(2000);
+
+            Boleto boleto = colectivo.PagarCon(tarjeta);
+
+            Assert.IsNotNull(boleto);
+            Assert.AreEqual(1500, boleto.TotalAbonado);
+            Assert.AreEqual(500, boleto.SaldoRestante);
         }
     }
 }
