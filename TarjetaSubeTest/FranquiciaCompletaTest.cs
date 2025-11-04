@@ -169,19 +169,15 @@ namespace TarjetaSubeTest
             FranquiciaCompleta tarjeta = new FranquiciaCompleta();
             tarjeta.Cargar(10000);
 
-            // Primer viaje: gratis
             Boleto boleto1 = colectivo.PagarCon(tarjeta);
             Assert.AreEqual(0, boleto1.TotalAbonado);
 
-            // Segundo viaje: gratis
             Boleto boleto2 = colectivo.PagarCon(tarjeta);
             Assert.AreEqual(0, boleto2.TotalAbonado);
 
-            // Tercer viaje: cobrado
             Boleto boleto3 = colectivo.PagarCon(tarjeta);
             Assert.AreEqual(1580, boleto3.TotalAbonado);
 
-            // Cuarto viaje: cobrado
             Boleto boleto4 = colectivo.PagarCon(tarjeta);
             Assert.AreEqual(1580, boleto4.TotalAbonado);
             Assert.AreEqual(10000 - 1580 - 1580, tarjeta.ObtenerSaldo());
@@ -195,12 +191,10 @@ namespace TarjetaSubeTest
             FranquiciaCompleta tarjeta = new FranquiciaCompleta();
             tarjeta.Cargar(10000);
 
-            // Día 1: 2 gratis, 1 cobrado
             colectivo.PagarCon(tarjeta);
             colectivo.PagarCon(tarjeta);
             colectivo.PagarCon(tarjeta);
 
-            // Día 2
             tiempoFalso.AgregarDias(1);
             Boleto boletoD2_1 = colectivo.PagarCon(tarjeta);
             Assert.AreEqual(0, boletoD2_1.TotalAbonado);

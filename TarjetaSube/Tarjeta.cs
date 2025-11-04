@@ -8,20 +8,26 @@ namespace TarjetaSube
         public int Id { get; private set; }
         protected int saldo;
         private const int LIMITE_SALDO = 56000;
-        private const int LIMITE_NEGATIVO = -1200;
         private int saldoPendiente;
         private int[] CARGAS_VALIDAS = { 2000, 3000, 4000, 5000, 8000, 10000, 15000, 20000, 25000, 30000 };
         protected const int TARIFA_PASAJE = 1580;
+  
+        protected const int LIMITE_NEGATIVO = -1200;
+
+        private int viajesDelMes = 0;
+        private int mesActual = -1;
 
         public int Saldo => saldo;
         public int SaldoPendiente => saldoPendiente;
 
-
         public Tarjeta()
         {
-            Id = ++contadorId;
+            contadorId++;
+            Id = contadorId;
             saldo = 0;
             saldoPendiente = 0;
+            mesActual = -1;
+            viajesDelMes = 0;
         }
 
         public int ObtenerSaldo()
@@ -82,9 +88,36 @@ namespace TarjetaSube
             return true;
         }
 
-        public virtual bool Pagar()
+        private double ObtenerDescuento(Tiempo tiempo)
         {
-            return Descontar(TARIFA_PASAJE);
+            DateTime ahora = tiempo.Now();
+
+            if (mesActual != ahora.Month)
+            {
+                mesActual = ahora.Month;
+                viajesDelMes = 0;
+            }
+
+            int numeroDelViaje = viajesDelMes + 1;
+
+            if (numeroDelViaje >= 30 && numeroDelViaje <= 59)
+                return 0.20; 
+            if (numeroDelViaje >= 60 && numeroDelViaje <= 80)
+                return 0.25; 
+
+            return 0.0; 
+        }
+
+        public virtual int CalcularTarifaConDescuento(int tarifaBase, Tiempo tiempo)
+        {
+            double descuento = ObtenerDescuento(tiempo);
+            double tarifaConDescuento = tarifaBase * (1.0 - descuento);
+            return (int)Math.Round(tarifaConDescuento);
+        }
+
+        public int ObtenerCantidadViajesMes()
+        {
+            return viajesDelMes;
         }
 
         public virtual bool PuedeViajar(Tiempo tiempo)
@@ -94,6 +127,15 @@ namespace TarjetaSube
 
         public virtual void RegistrarViaje(Tiempo tiempo)
         {
+            DateTime ahora = tiempo.Now();
+
+            if (mesActual != ahora.Month)
+            {
+                mesActual = ahora.Month;
+                viajesDelMes = 0;
+            }
+
+            viajesDelMes++;
         }
     }
 
@@ -112,11 +154,6 @@ namespace TarjetaSube
             saldo -= mitad;
             AcreditarCarga();
             return true;
-        }
-
-        public override bool Pagar()
-        {
-            return Descontar(TARIFA_PASAJE);
         }
 
         public override bool PuedeViajar(Tiempo tiempo)
@@ -172,6 +209,11 @@ namespace TarjetaSube
             AcreditarCarga();
             return true;
         }
+
+        public override int CalcularTarifaConDescuento(int tarifaBase, Tiempo tiempo)
+        {
+            return tarifaBase;
+        }
     }
 
     public class BoletoGratuito : Tarjeta
@@ -181,7 +223,6 @@ namespace TarjetaSube
         private const int MAX_VIAJES_GRATUITOS = 2;
 
         public override bool Descontar(int monto) => true;
-        public override bool Pagar() => true;
 
         public override void RegistrarViaje(Tiempo tiempo)
         {
@@ -194,13 +235,12 @@ namespace TarjetaSube
             }
 
             viajesHoy++;
+            base.RegistrarViaje(tiempo);
         }
 
         public int ObtenerTarifaActual()
         {
-            if (viajesHoy >= MAX_VIAJES_GRATUITOS)
-                return TARIFA_PASAJE;
-            return 0;
+            return viajesHoy >= MAX_VIAJES_GRATUITOS ? TARIFA_PASAJE : 0;
         }
 
         public bool DescontarSegunViajes(Tiempo tiempo)
@@ -218,12 +258,17 @@ namespace TarjetaSube
             if (tarifa == 0)
                 return true;
 
-            if (saldo - tarifa < -1200)
+            if (saldo - tarifa < LIMITE_NEGATIVO)
                 return false;
 
             saldo -= tarifa;
             AcreditarCarga();
             return true;
+        }
+
+        public override int CalcularTarifaConDescuento(int tarifaBase, Tiempo tiempo)
+        {
+            return tarifaBase;
         }
     }
 
@@ -234,7 +279,6 @@ namespace TarjetaSube
         private const int MAX_VIAJES_GRATUITOS = 2;
 
         public override bool Descontar(int monto) => true;
-        public override bool Pagar() => true;
 
         public override void RegistrarViaje(Tiempo tiempo)
         {
@@ -247,13 +291,12 @@ namespace TarjetaSube
             }
 
             viajesHoy++;
+            base.RegistrarViaje(tiempo);
         }
 
         public int ObtenerTarifaActual()
         {
-            if (viajesHoy >= MAX_VIAJES_GRATUITOS)
-                return TARIFA_PASAJE;
-            return 0;
+            return viajesHoy >= MAX_VIAJES_GRATUITOS ? TARIFA_PASAJE : 0;
         }
 
         public bool DescontarSegunViajes(Tiempo tiempo)
@@ -271,12 +314,17 @@ namespace TarjetaSube
             if (tarifa == 0)
                 return true;
 
-            if (saldo - tarifa < -1200)
+            if (saldo - tarifa < LIMITE_NEGATIVO)
                 return false;
 
             saldo -= tarifa;
             AcreditarCarga();
             return true;
+        }
+
+        public override int CalcularTarifaConDescuento(int tarifaBase, Tiempo tiempo)
+        {
+            return tarifaBase;
         }
     }
 }
