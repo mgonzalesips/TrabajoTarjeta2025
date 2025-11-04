@@ -93,6 +93,7 @@ namespace TarjetaSubeTest
         public void TestBoletoConBoletoGratuito()
         {
             TiempoFalso tiempoFalso = new TiempoFalso();
+            tiempoFalso.AgregarMinutos(360); 
             Colectivo colectivo = new Colectivo("201", tiempoFalso);
             BoletoGratuito tarjeta = new BoletoGratuito();
 
@@ -110,6 +111,7 @@ namespace TarjetaSubeTest
         public void TestBoletoGratuitoTercerViajePagaTarifaCompleta()
         {
             TiempoFalso tiempoFalso = new TiempoFalso();
+            tiempoFalso.AgregarMinutos(360); 
             Colectivo colectivo = new Colectivo("201", tiempoFalso);
             BoletoGratuito tarjeta = new BoletoGratuito();
             tarjeta.Cargar(5000);

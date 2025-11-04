@@ -142,6 +142,7 @@ namespace TarjetaSubeTest
         public void TestMedioBoletoDescuentaMitad()
         {
             TiempoFalso tiempo = new TiempoFalso();
+            tiempo.AgregarMinutos(360);
             MedioBoleto tarjeta = new MedioBoleto();
             Colectivo colectivo = new Colectivo("152", tiempo);
             
@@ -166,6 +167,7 @@ namespace TarjetaSubeTest
         public void TestBoletoGratuitoNoDescuenta()
         {
             TiempoFalso tiempoFalso = new TiempoFalso();
+            tiempoFalso.AgregarMinutos(360); 
             BoletoGratuito tarjeta = new BoletoGratuito();
             tarjeta.Cargar(2000);
 
@@ -178,6 +180,7 @@ namespace TarjetaSubeTest
         public void TestBoletoGratuitoTercerViajeDescuentaTarifaCompleta()
         {
             TiempoFalso tiempoFalso = new TiempoFalso();
+            tiempoFalso.AgregarMinutos(360); 
             BoletoGratuito tarjeta = new BoletoGratuito();
             tarjeta.Cargar(5000);
 
@@ -205,6 +208,7 @@ namespace TarjetaSubeTest
         public void TestFranquiciaCompletaSiemprePuedePagar()
         {
             TiempoFalso tiempo = new TiempoFalso();
+            tiempo.AgregarMinutos(360); 
             FranquiciaCompleta tarjeta = new FranquiciaCompleta();
             Colectivo colectivo = new Colectivo("152", tiempo);
             

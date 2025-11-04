@@ -149,15 +149,28 @@ namespace TarjetaSube
 
         public override bool Descontar(int monto)
         {
-            int mitad = monto / 2;
-            if (saldo - mitad < -1200) return false;
-            saldo -= mitad;
+            if (saldo - monto < LIMITE_NEGATIVO) return false;
+            saldo -= monto;
             AcreditarCarga();
+            return true;
+        }
+
+        private bool EstaEnHorarioFranquicia(Tiempo tiempo)
+        {
+            DateTime ahora = tiempo.Now();
+            if (ahora.DayOfWeek == DayOfWeek.Saturday || ahora.DayOfWeek == DayOfWeek.Sunday)
+                return false;
+            var hora = ahora.TimeOfDay;
+            if (hora < TimeSpan.FromHours(6) || hora >= TimeSpan.FromHours(22))
+                return false;
             return true;
         }
 
         public override bool PuedeViajar(Tiempo tiempo)
         {
+            if (!EstaEnHorarioFranquicia(tiempo))
+                return false;
+
             DateTime ahora = tiempo.Now();
 
             if (ultimoViaje.HasValue)
@@ -192,22 +205,19 @@ namespace TarjetaSube
             viajesHoy++;
         }
 
-        public int ObtenerTarifaActual()
+        public int ObtenerTarifaActual(int tarifaBase)
         {
             if (viajesHoy >= MAX_VIAJES_CON_DESCUENTO)
             {
-                return TARIFA_PASAJE;
+                return tarifaBase;
             }
-            return TARIFA_PASAJE / 2;
+            return tarifaBase / 2;
         }
 
-        public bool DescontarSegunViajes()
+        public bool DescontarSegunViajes(int tarifaBase)
         {
-            int tarifa = ObtenerTarifaActual();
-            if (saldo - tarifa < -1200) return false;
-            saldo -= tarifa;
-            AcreditarCarga();
-            return true;
+            int tarifa = ObtenerTarifaActual(tarifaBase);
+            return Descontar(tarifa);
         }
 
         public override int CalcularTarifaConDescuento(int tarifaBase, Tiempo tiempo)
@@ -238,12 +248,28 @@ namespace TarjetaSube
             base.RegistrarViaje(tiempo);
         }
 
-        public int ObtenerTarifaActual()
+        private bool EstaEnHorarioFranquicia(Tiempo tiempo)
         {
-            return viajesHoy >= MAX_VIAJES_GRATUITOS ? TARIFA_PASAJE : 0;
+            DateTime ahora = tiempo.Now();
+            if (ahora.DayOfWeek == DayOfWeek.Saturday || ahora.DayOfWeek == DayOfWeek.Sunday)
+                return false;
+            var hora = ahora.TimeOfDay;
+            if (hora < TimeSpan.FromHours(6) || hora >= TimeSpan.FromHours(22))
+                return false;
+            return true;
         }
 
-        public bool DescontarSegunViajes(Tiempo tiempo)
+        public override bool PuedeViajar(Tiempo tiempo)
+        {
+            return EstaEnHorarioFranquicia(tiempo);
+        }
+
+        public int ObtenerTarifaActual(int tarifaBase)
+        {
+            return viajesHoy >= MAX_VIAJES_GRATUITOS ? tarifaBase : 0;
+        }
+
+        public bool DescontarSegunViajes(int tarifaBase, Tiempo tiempo)
         {
             DateTime ahora = tiempo.Now();
 
@@ -253,7 +279,7 @@ namespace TarjetaSube
                 viajesHoy = 0;
             }
 
-            int tarifa = ObtenerTarifaActual();
+            int tarifa = ObtenerTarifaActual(tarifaBase);
 
             if (tarifa == 0)
                 return true;
@@ -264,6 +290,11 @@ namespace TarjetaSube
             saldo -= tarifa;
             AcreditarCarga();
             return true;
+        }
+
+        public bool DescontarSegunViajes(Tiempo tiempo)
+        {
+            return DescontarSegunViajes(TARIFA_PASAJE, tiempo);
         }
 
         public override int CalcularTarifaConDescuento(int tarifaBase, Tiempo tiempo)
@@ -294,12 +325,27 @@ namespace TarjetaSube
             base.RegistrarViaje(tiempo);
         }
 
-        public int ObtenerTarifaActual()
+        private bool EstaEnHorarioFranquicia(Tiempo tiempo)
         {
-            return viajesHoy >= MAX_VIAJES_GRATUITOS ? TARIFA_PASAJE : 0;
+            DateTime ahora = tiempo.Now();
+            if (ahora.DayOfWeek == DayOfWeek.Saturday || ahora.DayOfWeek == DayOfWeek.Sunday)
+                return false;
+            var hora = ahora.TimeOfDay;
+            if (hora < TimeSpan.FromHours(6) || hora >= TimeSpan.FromHours(22))
+                return false;
+            return true;
         }
 
-        public bool DescontarSegunViajes(Tiempo tiempo)
+        public override bool PuedeViajar(Tiempo tiempo)
+        {
+            return EstaEnHorarioFranquicia(tiempo);
+        }
+
+        public int ObtenerTarifaActual(int tarifaBase)
+        {
+            return viajesHoy >= MAX_VIAJES_GRATUITOS ? tarifaBase : 0;
+        }
+        public bool DescontarSegunViajes(int tarifaBase, Tiempo tiempo)
         {
             DateTime ahora = tiempo.Now();
 
@@ -309,7 +355,7 @@ namespace TarjetaSube
                 viajesHoy = 0;
             }
 
-            int tarifa = ObtenerTarifaActual();
+            int tarifa = ObtenerTarifaActual(tarifaBase);
 
             if (tarifa == 0)
                 return true;

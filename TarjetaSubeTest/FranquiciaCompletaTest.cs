@@ -10,6 +10,7 @@ namespace TarjetaSubeTest
         public void TestFranquiciaCompletaPrimerViajeGratuito()
         {
             TiempoFalso tiempoFalso = new TiempoFalso();
+            tiempoFalso.AgregarMinutos(360); 
             Colectivo colectivo = new Colectivo("202", tiempoFalso);
             FranquiciaCompleta tarjeta = new FranquiciaCompleta();
 
@@ -25,6 +26,7 @@ namespace TarjetaSubeTest
         public void TestFranquiciaCompletaSegundoViajeGratuito()
         {
             TiempoFalso tiempoFalso = new TiempoFalso();
+            tiempoFalso.AgregarMinutos(360); 
             Colectivo colectivo = new Colectivo("202", tiempoFalso);
             FranquiciaCompleta tarjeta = new FranquiciaCompleta();
 
@@ -41,6 +43,7 @@ namespace TarjetaSubeTest
         public void TestFranquiciaCompletaNoPermiteMasDeDosViajesGratuitos()
         {
             TiempoFalso tiempoFalso = new TiempoFalso();
+            tiempoFalso.AgregarMinutos(360);
             Colectivo colectivo = new Colectivo("202", tiempoFalso);
             FranquiciaCompleta tarjeta = new FranquiciaCompleta();
             tarjeta.Cargar(5000);
@@ -65,6 +68,7 @@ namespace TarjetaSubeTest
         public void TestFranquiciaCompletaViajesPosterioresAlSegundoSeCobran()
         {
             TiempoFalso tiempoFalso = new TiempoFalso();
+            tiempoFalso.AgregarMinutos(360); 
             Colectivo colectivo = new Colectivo("202", tiempoFalso);
             FranquiciaCompleta tarjeta = new FranquiciaCompleta();
             tarjeta.Cargar(10000);
@@ -92,6 +96,7 @@ namespace TarjetaSubeTest
         public void TestFranquiciaCompletaReiniciaContadorAlDiaSiguiente()
         {
             TiempoFalso tiempoFalso = new TiempoFalso();
+            tiempoFalso.AgregarMinutos(360); 
             Colectivo colectivo = new Colectivo("202", tiempoFalso);
             FranquiciaCompleta tarjeta = new FranquiciaCompleta();
             tarjeta.Cargar(10000);
@@ -118,6 +123,7 @@ namespace TarjetaSubeTest
         public void TestFranquiciaCompletaSinSaldoNoPermiteTercerViaje()
         {
             TiempoFalso tiempoFalso = new TiempoFalso();
+            tiempoFalso.AgregarMinutos(360);
             Colectivo colectivo = new Colectivo("202", tiempoFalso);
             FranquiciaCompleta tarjeta = new FranquiciaCompleta();
 
@@ -137,6 +143,7 @@ namespace TarjetaSubeTest
         public void TestFranquiciaCompletaTercerViajePagaTarifaCompleta()
         {
             TiempoFalso tiempoFalso = new TiempoFalso();
+            tiempoFalso.AgregarMinutos(360); 
             Colectivo colectivo = new Colectivo("202", tiempoFalso);
             FranquiciaCompleta tarjeta = new FranquiciaCompleta();
             tarjeta.Cargar(5000);
@@ -165,6 +172,7 @@ namespace TarjetaSubeTest
         public void TestFranquiciaCompletaCuartoViajeDelMismoDiaCobrado()
         {
             TiempoFalso tiempoFalso = new TiempoFalso();
+            tiempoFalso.AgregarMinutos(360); 
             Colectivo colectivo = new Colectivo("202", tiempoFalso);
             FranquiciaCompleta tarjeta = new FranquiciaCompleta();
             tarjeta.Cargar(10000);
@@ -187,6 +195,7 @@ namespace TarjetaSubeTest
         public void TestFranquiciaCompletaDespuesDeDosDiasSigueTeniendoDosViajesGratis()
         {
             TiempoFalso tiempoFalso = new TiempoFalso();
+            tiempoFalso.AgregarMinutos(360); 
             Colectivo colectivo = new Colectivo("202", tiempoFalso);
             FranquiciaCompleta tarjeta = new FranquiciaCompleta();
             tarjeta.Cargar(10000);
