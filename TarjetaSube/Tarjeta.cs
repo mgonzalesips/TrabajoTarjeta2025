@@ -7,17 +7,21 @@ namespace TarjetaSube
         private static int contadorId = 0;
         public int Id { get; private set; }
         protected int saldo;
-        private const int LIMITE_SALDO = 40000;
+        private const int LIMITE_SALDO = 56000;
         private const int LIMITE_NEGATIVO = -1200;
+        private int saldoPendiente;
         private int[] CARGAS_VALIDAS = { 2000, 3000, 4000, 5000, 8000, 10000, 15000, 20000, 25000, 30000 };
         protected const int TARIFA_PASAJE = 1580;
 
         public int Saldo => saldo;
+        public int SaldoPendiente => saldoPendiente;
+
 
         public Tarjeta()
         {
             Id = ++contadorId;
             saldo = 0;
+            saldoPendiente = 0;
         }
 
         public int ObtenerSaldo()
@@ -38,14 +42,32 @@ namespace TarjetaSube
             }
 
             if (!valido) return false;
-            if (saldo + monto > LIMITE_SALDO) return false;
 
-            saldo += monto;
+            int nuevoSaldo = saldo + monto;
 
-            if (saldo > LIMITE_SALDO)
+            if (nuevoSaldo > LIMITE_SALDO)
+            {
+                saldoPendiente += nuevoSaldo - LIMITE_SALDO;
                 saldo = LIMITE_SALDO;
+            }
+            else
+            {
+                saldo = nuevoSaldo;
+            }
 
             return true;
+        }
+
+        public void AcreditarCarga()
+        {
+            if (saldoPendiente > 0 && saldo < LIMITE_SALDO)
+            {
+                int espacioDisponible = LIMITE_SALDO - saldo;
+                int montoAcreditado = Math.Min(espacioDisponible, saldoPendiente);
+
+                saldo += montoAcreditado;
+                saldoPendiente -= montoAcreditado;
+            }
         }
 
         public virtual bool Descontar(int monto)
@@ -56,6 +78,7 @@ namespace TarjetaSube
             }
 
             saldo -= monto;
+            AcreditarCarga();
             return true;
         }
 
@@ -87,6 +110,7 @@ namespace TarjetaSube
             int mitad = monto / 2;
             if (saldo - mitad < -1200) return false;
             saldo -= mitad;
+            AcreditarCarga();
             return true;
         }
 
@@ -145,6 +169,7 @@ namespace TarjetaSube
             int tarifa = ObtenerTarifaActual();
             if (saldo - tarifa < -1200) return false;
             saldo -= tarifa;
+            AcreditarCarga();
             return true;
         }
     }
@@ -155,15 +180,8 @@ namespace TarjetaSube
         private int viajesHoy;
         private const int MAX_VIAJES_GRATUITOS = 2;
 
-        public override bool Descontar(int monto)
-        {
-            return true;
-        }
-
-        public override bool Pagar()
-        {
-            return true;
-        }
+        public override bool Descontar(int monto) => true;
+        public override bool Pagar() => true;
 
         public override void RegistrarViaje(Tiempo tiempo)
         {
@@ -181,9 +199,7 @@ namespace TarjetaSube
         public int ObtenerTarifaActual()
         {
             if (viajesHoy >= MAX_VIAJES_GRATUITOS)
-            {
                 return TARIFA_PASAJE;
-            }
             return 0;
         }
 
@@ -200,12 +216,13 @@ namespace TarjetaSube
             int tarifa = ObtenerTarifaActual();
 
             if (tarifa == 0)
-            {
                 return true;
-            }
 
-            if (saldo - tarifa < -1200) return false;
+            if (saldo - tarifa < -1200)
+                return false;
+
             saldo -= tarifa;
+            AcreditarCarga();
             return true;
         }
     }
@@ -216,15 +233,8 @@ namespace TarjetaSube
         private int viajesHoy;
         private const int MAX_VIAJES_GRATUITOS = 2;
 
-        public override bool Descontar(int monto)
-        {
-            return true;
-        }
-
-        public override bool Pagar()
-        {
-            return true;
-        }
+        public override bool Descontar(int monto) => true;
+        public override bool Pagar() => true;
 
         public override void RegistrarViaje(Tiempo tiempo)
         {
@@ -242,9 +252,7 @@ namespace TarjetaSube
         public int ObtenerTarifaActual()
         {
             if (viajesHoy >= MAX_VIAJES_GRATUITOS)
-            {
                 return TARIFA_PASAJE;
-            }
             return 0;
         }
 
@@ -261,12 +269,13 @@ namespace TarjetaSube
             int tarifa = ObtenerTarifaActual();
 
             if (tarifa == 0)
-            {
                 return true;
-            }
 
-            if (saldo - tarifa < -1200) return false;
+            if (saldo - tarifa < -1200)
+                return false;
+
             saldo -= tarifa;
+            AcreditarCarga();
             return true;
         }
     }
