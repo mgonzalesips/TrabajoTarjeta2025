@@ -3,6 +3,9 @@ using TarjetaSube;
 
 public class TarjetaComun : Tarjeta
 {
+
+
+
     public decimal CalcularDescuentoTarjetaComun(decimal tarifaBase)
     {
         int viajesEsteMes = CantidadViajesEsteMes();
@@ -18,7 +21,7 @@ public class TarjetaComun : Tarjeta
 
         return 0m;
     }
-    
+
     public override decimal CalcularMontoPasaje(decimal tarifaBase)
     {
         decimal descuento = CalcularDescuentoTarjetaComun(tarifaBase);
@@ -28,13 +31,6 @@ public class TarjetaComun : Tarjeta
     public override bool PuedePagar(decimal tarifaBase)
     {
         decimal montoPasaje = CalcularMontoPasaje(tarifaBase);
-        return Saldo - montoPasaje >= -1200m;
+        return Saldo - montoPasaje >= -1200m; 
     }
-    
-
-
-
-
-
-    
 }
