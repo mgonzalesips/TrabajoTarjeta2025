@@ -3,7 +3,7 @@
 ## Mesa Diciembre (3/12)
 
 Para el examen de diciembre se les solicita realizar las siguientes tareas.<br>
-Respecto al examen, este va a tener una parte de teoria y una de practica. La teoria seran preguntas sobre los apuntes de git y principios SOLID, la parte practica sera un ejercicio de programacion en papel. 
+Respecto al examen, este va a ser teorico y tambien habra una defensa oral de los nuevos requerimientos del TP.
 
 ### Consideraciones importantes
 Quienes no hayan completado la implementación de las iteraciones anteriores deberán hacerlo.<br>
